@@ -1,0 +1,10 @@
+@import 'normalize.css';
+@import 'modules/_mixins.css';
+@import 'modules/_global.css';
+@import 'modules/_header-box.css';
+@import 'modules/_wrapper.css';
+@import 'modules/_main-nav.css';
+@import 'modules/_skills-section.css';
+@import 'modules/_education-section.css';
+@import 'modules/_link-button.css';
+@import 'modules/_works-section.css';

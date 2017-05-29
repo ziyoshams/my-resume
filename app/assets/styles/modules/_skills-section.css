@@ -1,0 +1,35 @@
+.skills-section{
+  background-color: #fff;
+
+
+  & .wrapper{
+    display: block;
+  }
+
+  &__title{
+    display: flex;
+    justify-content: space-between;
+
+    h2{
+      text-align: center;
+    }
+
+  }
+
+  &__lang{
+    display: flex;
+    justify-content: space-between;
+
+    h5{
+      font-size: 1.2rem;
+      font-weight: 400;
+    }
+
+
+  }
+
+  &__computer-lang{
+
+
+  }
+}

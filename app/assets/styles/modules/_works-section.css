@@ -1,0 +1,55 @@
+
+.recent-work-section{
+  background: #f0f0f0;
+
+  &__works{
+    width: 100%;
+    display: flex;
+    justify-content:flex-end;
+    flex-wrap: wrap;
+    font-family: "Roboto", sans-serif;
+    font-weight: 300;
+
+    @mixin atLarge{
+      width: 960px;
+    }
+  }
+
+
+  &__projects{
+    flex-basis: 100%;
+    min-height: 300px;
+    padding: 10px;
+    background: #fff;
+    box-sizing: border-box;
+    text-align: center;
+    position: relative;
+    box-shadow: 0px 0px 15px #777;
+    margin: 20px;
+    @mixin atLarge{
+      flex-basis: 40%;
+    }
+
+    & h3{
+      border-bottom: 1px solid #e3e4e5;
+      font-weight: 300;
+      font-size-adjust: auto;
+      padding-bottom: 8px;
+    }
+
+    &__description{
+      font-weight: 300;
+      line-height: 1.4;
+      padding: 0px 10px;
+    }
+
+    &__btn{
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform:translateX(-50%);
+
+    }
+  }
+}

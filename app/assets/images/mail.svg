@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
+    <title>Mail</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="32" height="32"></rect>
+        <mask id="mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="32" height="32" fill="white">
+            <use xlink:href="#path-1"></use>
+        </mask>
+        <path d="M13.1204026,0.640050331 C14.0802684,0.760033554 16,1 16,1 L16,10.9914698 C16,12.1007504 15.1054862,13 14.0059397,13 L1.99406028,13 C0.892771196,13 0,12.0980496 0,10.9914698 L0,1 C0,1 2.04144631,0.744819211 3.06216947,0.617228816" id="path-3"></path>
+        <mask id="mask-4" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="16" height="12.3827712" fill="white">
+            <use xlink:href="#path-3"></use>
+        </mask>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Littie-Icons" transform="translate(-60.000000, -134.000000)">
+            <g id="Mail" transform="translate(60.000000, 134.000000)">
+                <use id="Rectangle-2" stroke="#484848" mask="url(#mask-2)" stroke-width="2" xlink:href="#path-1"></use>
+                <g id="Rectangle-12-+-Path-52" transform="translate(8.000000, 11.000000)" stroke="#484848">
+                    <use id="Rectangle-12" mask="url(#mask-4)" stroke-width="2" xlink:href="#path-3"></use>
+                    <polyline id="Path-52" points="2.5 10.5 8 8 13.5 10.5"></polyline>
+                </g>
+                <path d="M10,7.99810135 C10,6.89458045 10.9019504,6 12.0085302,6 L19.9914698,6 C21.1007504,6 22,6.88670635 22,7.99810135 L22,14 L16,17 L10,14 L10,7.99810135 Z M12,7 L12,8 L16,8 L16,7 L12,7 Z M12,9 L12,10 L20,10 L20,9 L12,9 Z M12,11 L12,12 L20,12 L20,11 L12,11 Z M13,13 L13,14 L19,14 L19,13 L13,13 Z" id="Rectangle-13" fill="#484848"></path>
+            </g>
+        </g>
+    </g>
+</svg>

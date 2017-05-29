@@ -1,0 +1,80 @@
+.primary-nav{
+  padding-top: 15px;
+
+  @mixin atMedium{
+    padding-top: 0;
+  }
+
+  &--pull-right{
+
+    @mixin atMedium{
+      float: right;
+    }
+  }
+
+
+  ul{
+    margin:0;
+    padding:0 0 30px 0;
+    @mixin clearfix;
+
+    @mixin atMedium{
+      padding:0;
+
+    }
+  }
+
+  li{
+    list-style:none;
+    display: inline-block;
+    transition: all 0.3s ease-in;
+
+    @mixin atMedium{
+      height: 50px;
+      padding: 0 20px;
+      float: left;
+      display: block;
+    }
+
+    &:hover{
+      background: #ecf0f1;
+
+    }
+
+    & a{
+      box-sizing: border-box;
+      height: 50px;
+      display: block;
+    }
+  }
+
+  li:last-child{
+    padding-right: 0;
+
+    @mixin atMedium{
+      padding-right: 20px;
+    }
+  }
+
+  a{
+    color: #ecf0f1;
+    font-weight: 400;
+    display: block;
+    text-decoration:none;
+    padding: 8px 10px;
+    font-size: 1rem;
+
+    @mixin atMedium{
+      color: #4c6475;
+      padding: 12px 0px;
+      font-size:1rem;
+      background-color: transparent;
+
+      &.is-current-link{
+        color: orange;
+      }
+    }
+
+  }
+
+}
