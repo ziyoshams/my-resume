@@ -449,6 +449,18 @@ html, body{
   cursor: pointer;
 }
 
+.section-header{
+  text-align: center;
+  font-weight: 300;
+}
+
+@media(min-width:1010px) {
+
+  .section-header {
+    font-size: 3rem;
+  }
+}
+
 .header-box{
   margin: 0;
   padding-top: 50px;
@@ -909,7 +921,7 @@ html, body{
 }
 
 .recent-work-section{
-  background: #f0f0f0;
+  background: #4C6475;
 }
 
 .recent-work-section__works{
@@ -942,21 +954,23 @@ html, body{
   box-sizing: border-box;
   text-align: center;
   position: relative;
-  box-shadow: 0px 0px 15px #777;
-  margin: 20px;
+  margin-bottom: 10px;
 }
 
 @media(min-width:1010px) {
 
   .recent-work-section__projects {
-    -ms-flex-preferred-size: 40%;
-        flex-basis: 40%;
+    -ms-flex-preferred-size: 45%;
+        flex-basis: 45%;
+    box-shadow: 0px 0px 15px #777;
+    margin: 20px;
+    font-size: 1.1rem;
   }
 }
 
 .recent-work-section__projects h3{
   border-bottom: 1px solid #e3e4e5;
-  font-weight: 300;
+  font-weight: 500;
   font-size-adjust: auto;
   padding-bottom: 8px;
 }
@@ -969,6 +983,8 @@ html, body{
 
 .recent-work-section__projects__btn{
   width: 100%;
+  font-size: 1.2rem;
+  font-weight: 200;
   position: absolute;
   bottom: 0;
   left: 50%;

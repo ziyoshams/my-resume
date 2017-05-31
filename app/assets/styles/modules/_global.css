@@ -20,3 +20,12 @@ html, body{
   width: 250px;
   cursor: pointer;
 }
+
+.section-header{
+  text-align: center;
+  font-weight: 300;
+
+  @mixin atLarge{
+    font-size: 3rem;
+  }
+}
