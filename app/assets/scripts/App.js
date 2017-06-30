@@ -19,5 +19,6 @@ new Bars('MySQL' ,'#mysql', '#20869D', 1, 4500);
 var mm = new mobileMenu();
 new Modal();
 
-new RevealOnScroll($(".skills-section__list-item"), "80%");
+new RevealOnScroll($(".skills-section__left-item-container"), "80%");
+new RevealOnScroll($(".skills-section__left-item-container"), "80%");
 new RevealOnScroll($(".recent-work-section__projects"), "80%");

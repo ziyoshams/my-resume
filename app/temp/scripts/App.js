@@ -11325,7 +11325,8 @@ new _Bars2.default('MySQL', '#mysql', '#20869D', 1, 4500);
 var mm = new _MobileMenu2.default();
 new _Modal2.default();
 
-new _RevealOnScroll2.default((0, _jquery2.default)(".skills-section__list-item"), "80%");
+new _RevealOnScroll2.default((0, _jquery2.default)(".skills-section__left-item-container"), "80%");
+new _RevealOnScroll2.default((0, _jquery2.default)(".skills-section__left-item-container"), "80%");
 new _RevealOnScroll2.default((0, _jquery2.default)(".recent-work-section__projects"), "80%");
 
 /***/ }),

@@ -7,95 +7,67 @@
   background-attachment: fixed;
 
 
-  &__list{
-    text-align: center;
-    height: 300px;
-    list-style-type: none;
-    padding: 0px;
-    margin: 0px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
+
+  &__left{
+    float:none;
 
     @mixin atLarge{
-      height: 500px;
+      float: left;
+      width: 50%;
     }
 
-    &-item{
-      display: inline-block;
-      flex-basis: 22%;
-      height: 100px;
-      background: #eee;
-      position: relative;
-      margin: 5px;
+    &-item-container{
+      width: 100%;
+      box-sizing: border-box;
+      flex-direction: row;
+      padding: 5px 5px 5px 10px;
+      display: flex;
 
       @mixin atLarge{
-        height: 200px;
+        flex-direction: row-reverse;
       }
-
     }
 
-    &-item-logo{
-      position: absolute;
-      top: 0;
-      left:0;
-      height: 80%;
+
+    &__logo{
+      font-size: 5rem;
+      text-align: center;
+      flex:1;
+      color: #53b4bf;
+    }
+
+    &__content{
+      flex:2;
+    }
+  }
+
+  &__right{
+    float:none;
+
+    @mixin atLarge{
+      float: left;
+      width: 50%;
+    }
+
+    &-item-container{
       width: 100%;
-      background: rgba(0, 0, 0, 0.7);
+      box-sizing: border-box;
+      flex-direction: row;
 
-      & p{
-        color: #fff;
-        font-size: 1.1rem;
-        margin-top: 1.3rem;
-
-        @mixin atLarge{
-          font-size: 2.5rem;
-          margin-top: 3rem;
-        }
-      }
-
+      padding: 5px 5px 5px 10px;
+      display: flex;
     }
 
-    &-item-level{
-      position: absolute;
-      bottom:0;
-      left: 0;
-      height: 20%;
+    &__logo{
+      font-size: 5rem;
       text-align: center;
-      font-size: 0.9rem;
+      flex:1;
+      color: #53b4bf;
     }
 
-  }
-
-
-  & .wrapper{
-    display: block;
-  }
-
-  &__title{
-    display: flex;
-    justify-content: space-between;
-
-    h2{
-      text-align: center;
+    &__content{
+      flex:2;
     }
-
   }
 
-  &__lang{
-    display: flex;
-    justify-content: space-between;
-
-    h5{
-      font-size: 1.2rem;
-      font-weight: 400;
-    }
-
-
-  }
-
-  &__computer-lang{
-
-
-  }
 }
