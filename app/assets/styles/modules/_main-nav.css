@@ -16,36 +16,34 @@
   ul{
     margin:0;
     padding:0 0 30px 0;
-    @mixin clearfix;
+    height: 50px;
 
     @mixin atMedium{
       padding:0;
-
+      height: 50px;
     }
   }
 
   li{
+    height: 50px;
     list-style:none;
-    display: inline-block;
-    transition: all 0.3s ease-in;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    transition: background 0.3s ease-in;
+
+
+    &:hover{
+      background: #333;
+    }
 
     @mixin atMedium{
       height: 50px;
       padding: 0 20px;
       float: left;
-      display: block;
-    }
-
-    &:hover{
-      background: #ecf0f1;
 
     }
 
-    & a{
-      box-sizing: border-box;
-      height: 50px;
-      display: block;
-    }
   }
 
   li:last-child{
@@ -57,12 +55,13 @@
   }
 
   a{
+    margin: auto;
     color: #ecf0f1;
     font-weight: 400;
-    display: block;
     text-decoration:none;
     padding: 8px 10px;
     font-size: 1rem;
+    flex: 1;
 
     @mixin atMedium{
       color: #4c6475;

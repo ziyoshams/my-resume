@@ -1,0 +1,49 @@
+.other-activity-section{
+  background: #ECF0F1;
+
+
+  .activity-section{
+    display: flex;
+    flex-wrap: wrap;
+
+
+    .wrapper{
+      @mixin clearfix;
+    }
+
+    &__header{
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: #383538;
+    }
+
+    &__activity-box{
+      flex-basis: 100%;
+      float: left;
+      border-left:5px solid skyblue;
+      padding-left: 15px;
+      margin-bottom: 5px;
+
+      @mixin atLarge{
+        flex-basis: 45%;
+        margin: 5px;
+      }
+
+      &__description{
+        font-size: 1rem;
+        line-height: 1.4;
+        font-weight: 300;
+        text-indent: 15px;
+
+        @mixin atMedium{
+          font-size: 1.175rem;
+        }
+
+        @mixin atLarge{
+          font-size: 1.2rem;
+        }
+      }
+    }
+
+  }
+}

@@ -15,6 +15,7 @@
   @mixin atLarge{
     padding: 0;
     height: 100vh;
+
   }
 
 
@@ -22,13 +23,20 @@
     position: absolute;
     top:0;
     left: 100;
-    width: 40px;
-    height:40px;
+    width: 50px;
+    height:50px;
     background: url("../../../assets/images/Artboard.svg");
     background-repeat: no-repeat;
     background-size: contain;
     margin: 5px;
-    z-index: 9999;
+    z-index: 10;
+    transition: all 0.3s ease-in-out;
+
+    @mixin atLarge{
+      width: 70px;
+      height: 70px;
+    }
+
   }
 
 
@@ -39,19 +47,16 @@
     left:0;
     width: 100%;
     opacity: 0;
-    padding-top: 0px;
-    transform: scale(1.2);
-    text-align: center;
-    transition: all 1s ease-out;
     z-index: -10;
-    background: #53b4bf;
-    background: -moz-linear-gradient(left, #53b4bf 0%, #53b4bf 72%, #53c6c4 100%);
-    background: -webkit-linear-gradient(left, #53b4bf 0%,#53b4bf 72%,#53c6c4 100%);
-    background: linear-gradient(to right, #53b4bf 0%,#53b4bf 72%,#53c6c4 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#53b4bf', endColorstr='#53c6c4',GradientType=1 );
+    padding-top: 0px;
+    text-align: center;
+    transition: opacity 0.3s ease-out;
 
     &--is-expanded{
-      background-color: rgba(0, 0, 0, 0.3);
+      background: -moz-linear-gradient(top, rgba(0,0,0,0.4) 0%, rgba(14,14,14,0.66) 44%, rgba(14,14,14,1) 100%);
+      background: -webkit-linear-gradient(top, rgba(0,0,0,0.4) 0%,rgba(14,14,14,0.66) 44%,rgba(14,14,14,1) 100%);
+      background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%,rgba(14,14,14,0.66) 44%,rgba(14,14,14,1) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#66000000', endColorstr='#0e0e0e',GradientType=0 );
     }
 
     @mixin atLarge{
@@ -60,7 +65,7 @@
       padding-top: 0px;
       transform: scale(1);
       z-index: 10;
-
+      box-shadow: 0px 1px 2px rgba(0,0,0,0.1);
     }
 
     &--is-visible{
@@ -68,10 +73,8 @@
       z-index: 1;
       transform: scale(1);
       padding-top: 100px;
-      height: auto;
-      box-shadow: 0px 2px 10px #222;
-
-
+      height: 100vh;
+      position: fixed;
     }
   }
 
@@ -84,6 +87,7 @@
     right:20px;
     cursor: pointer;
 
+
     &::before{
       content:'';
       position: absolute;
@@ -91,7 +95,7 @@
       left:0;
       width:20px;
       height:3px;
-      background-color: #4C6475;
+      background-color: #fff;
       transform-origin:0 0;
       transition: transform 0.3s ease-out;
     }
@@ -102,7 +106,7 @@
       left:0;
       width:20px;
       height:3px;
-      background-color: #4C6475;
+      background-color: #fff;
       transition: all 0.3s ease-out;
     }
 
@@ -113,7 +117,7 @@
       left:0;
       width:20px;
       height:3px;
-      background-color: #4C6475;
+      background-color: #fff;
       transform-origin: 0 100%;
       transition: transform 0.3s ease-out;
     }
@@ -178,7 +182,7 @@
     font-weight: 300;
     line-height: 1.5;
     font-style: italic;
-    font-family: Roboto, sans-serif;
+    font-family: "Roboto", sans-serif;
 
     @mixin atLarge{
       font-size: 1.2rem;
@@ -187,20 +191,21 @@
       font-style: normal;
     }
   }
+
   &__menu-icon--close-x{
+    transition: transform 1s ease-in;
 
-  &::before{
+    &::before{
+      transform:rotate(45deg) scaleX(1.2);
+    }
 
-    transform:rotate(45deg) scaleX(1.2);
+    .header-box__menu-icon__middle{
+      opacity: 0;
+      transform: scaleX(0);
+    }
+
+    &::after{
+      transform: rotate(-45deg) scaleX(1.2);
+    }
   }
-
-  .header-box__menu-icon__middle{
-    opacity: 0;
-    transform: scaleX(0);
-  }
-
-  &::after{
-    transform: rotate(-45deg) scaleX(1.2);
-  }
-}
 }

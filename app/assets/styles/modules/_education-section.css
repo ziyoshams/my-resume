@@ -30,8 +30,16 @@
 
   &--description{
     font-size: 1rem;
-    line-height: 1.3;
+    line-height: 1.4;
     font-weight: 300;
+
+    @mixin atMedium{
+      font-size: 1.175rem;
+    }
+
+    @mixin atLarge{
+      font-size: 1.2rem;
+    }
   }
 
   &--school-section{
@@ -45,15 +53,6 @@
       margin-right:20px;
     }
 
-
-  }
-
-  &__tut{
-
-
-  }
-
-  &__bmcc{
 
   }
 

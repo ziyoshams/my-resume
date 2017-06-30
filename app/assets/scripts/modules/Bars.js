@@ -34,7 +34,7 @@ class Bars{
                 prefix: true,
                 value: 'translate(0%, -50%)'
             }
-        },
+          },
       }
     });
     bar.animate(this.level);

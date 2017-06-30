@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 10);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -211,690 +211,6 @@ module.exports = {
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Base object for different progress bar shapes
-
-var Path = __webpack_require__(3);
-var utils = __webpack_require__(0);
-
-var DESTROYED_ERROR = 'Object is destroyed';
-
-var Shape = function Shape(container, opts) {
-    // Throw a better error if progress bars are not initialized with `new`
-    // keyword
-    if (!(this instanceof Shape)) {
-        throw new Error('Constructor was called without new keyword');
-    }
-
-    // Prevent calling constructor without parameters so inheritance
-    // works correctly. To understand, this is how Shape is inherited:
-    //
-    //   Line.prototype = new Shape();
-    //
-    // We just want to set the prototype for Line.
-    if (arguments.length === 0) {
-        return;
-    }
-
-    // Default parameters for progress bar creation
-    this._opts = utils.extend({
-        color: '#555',
-        strokeWidth: 1.0,
-        trailColor: null,
-        trailWidth: null,
-        fill: null,
-        text: {
-            style: {
-                color: null,
-                position: 'absolute',
-                left: '50%',
-                top: '50%',
-                padding: 0,
-                margin: 0,
-                transform: {
-                    prefix: true,
-                    value: 'translate(-50%, -50%)'
-                }
-            },
-            autoStyleContainer: true,
-            alignToBottom: true,
-            value: null,
-            className: 'progressbar-text'
-        },
-        svgStyle: {
-            display: 'block',
-            width: '100%'
-        },
-        warnings: false
-    }, opts, true);  // Use recursive extend
-
-    // If user specifies e.g. svgStyle or text style, the whole object
-    // should replace the defaults to make working with styles easier
-    if (utils.isObject(opts) && opts.svgStyle !== undefined) {
-        this._opts.svgStyle = opts.svgStyle;
-    }
-    if (utils.isObject(opts) && utils.isObject(opts.text) && opts.text.style !== undefined) {
-        this._opts.text.style = opts.text.style;
-    }
-
-    var svgView = this._createSvgView(this._opts);
-
-    var element;
-    if (utils.isString(container)) {
-        element = document.querySelector(container);
-    } else {
-        element = container;
-    }
-
-    if (!element) {
-        throw new Error('Container does not exist: ' + container);
-    }
-
-    this._container = element;
-    this._container.appendChild(svgView.svg);
-    if (this._opts.warnings) {
-        this._warnContainerAspectRatio(this._container);
-    }
-
-    if (this._opts.svgStyle) {
-        utils.setStyles(svgView.svg, this._opts.svgStyle);
-    }
-
-    // Expose public attributes before Path initialization
-    this.svg = svgView.svg;
-    this.path = svgView.path;
-    this.trail = svgView.trail;
-    this.text = null;
-
-    var newOpts = utils.extend({
-        attachment: undefined,
-        shape: this
-    }, this._opts);
-    this._progressPath = new Path(svgView.path, newOpts);
-
-    if (utils.isObject(this._opts.text) && this._opts.text.value !== null) {
-        this.setText(this._opts.text.value);
-    }
-};
-
-Shape.prototype.animate = function animate(progress, opts, cb) {
-    if (this._progressPath === null) {
-        throw new Error(DESTROYED_ERROR);
-    }
-
-    this._progressPath.animate(progress, opts, cb);
-};
-
-Shape.prototype.stop = function stop() {
-    if (this._progressPath === null) {
-        throw new Error(DESTROYED_ERROR);
-    }
-
-    // Don't crash if stop is called inside step function
-    if (this._progressPath === undefined) {
-        return;
-    }
-
-    this._progressPath.stop();
-};
-
-Shape.prototype.destroy = function destroy() {
-    if (this._progressPath === null) {
-        throw new Error(DESTROYED_ERROR);
-    }
-
-    this.stop();
-    this.svg.parentNode.removeChild(this.svg);
-    this.svg = null;
-    this.path = null;
-    this.trail = null;
-    this._progressPath = null;
-
-    if (this.text !== null) {
-        this.text.parentNode.removeChild(this.text);
-        this.text = null;
-    }
-};
-
-Shape.prototype.set = function set(progress) {
-    if (this._progressPath === null) {
-        throw new Error(DESTROYED_ERROR);
-    }
-
-    this._progressPath.set(progress);
-};
-
-Shape.prototype.value = function value() {
-    if (this._progressPath === null) {
-        throw new Error(DESTROYED_ERROR);
-    }
-
-    if (this._progressPath === undefined) {
-        return 0;
-    }
-
-    return this._progressPath.value();
-};
-
-Shape.prototype.setText = function setText(newText) {
-    if (this._progressPath === null) {
-        throw new Error(DESTROYED_ERROR);
-    }
-
-    if (this.text === null) {
-        // Create new text node
-        this.text = this._createTextContainer(this._opts, this._container);
-        this._container.appendChild(this.text);
-    }
-
-    // Remove previous text and add new
-    if (utils.isObject(newText)) {
-        utils.removeChildren(this.text);
-        this.text.appendChild(newText);
-    } else {
-        this.text.innerHTML = newText;
-    }
-};
-
-Shape.prototype._createSvgView = function _createSvgView(opts) {
-    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    this._initializeSvg(svg, opts);
-
-    var trailPath = null;
-    // Each option listed in the if condition are 'triggers' for creating
-    // the trail path
-    if (opts.trailColor || opts.trailWidth) {
-        trailPath = this._createTrail(opts);
-        svg.appendChild(trailPath);
-    }
-
-    var path = this._createPath(opts);
-    svg.appendChild(path);
-
-    return {
-        svg: svg,
-        path: path,
-        trail: trailPath
-    };
-};
-
-Shape.prototype._initializeSvg = function _initializeSvg(svg, opts) {
-    svg.setAttribute('viewBox', '0 0 100 100');
-};
-
-Shape.prototype._createPath = function _createPath(opts) {
-    var pathString = this._pathString(opts);
-    return this._createPathElement(pathString, opts);
-};
-
-Shape.prototype._createTrail = function _createTrail(opts) {
-    // Create path string with original passed options
-    var pathString = this._trailString(opts);
-
-    // Prevent modifying original
-    var newOpts = utils.extend({}, opts);
-
-    // Defaults for parameters which modify trail path
-    if (!newOpts.trailColor) {
-        newOpts.trailColor = '#eee';
-    }
-    if (!newOpts.trailWidth) {
-        newOpts.trailWidth = newOpts.strokeWidth;
-    }
-
-    newOpts.color = newOpts.trailColor;
-    newOpts.strokeWidth = newOpts.trailWidth;
-
-    // When trail path is set, fill must be set for it instead of the
-    // actual path to prevent trail stroke from clipping
-    newOpts.fill = null;
-
-    return this._createPathElement(pathString, newOpts);
-};
-
-Shape.prototype._createPathElement = function _createPathElement(pathString, opts) {
-    var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('d', pathString);
-    path.setAttribute('stroke', opts.color);
-    path.setAttribute('stroke-width', opts.strokeWidth);
-
-    if (opts.fill) {
-        path.setAttribute('fill', opts.fill);
-    } else {
-        path.setAttribute('fill-opacity', '0');
-    }
-
-    return path;
-};
-
-Shape.prototype._createTextContainer = function _createTextContainer(opts, container) {
-    var textContainer = document.createElement('div');
-    textContainer.className = opts.text.className;
-
-    var textStyle = opts.text.style;
-    if (textStyle) {
-        if (opts.text.autoStyleContainer) {
-            container.style.position = 'relative';
-        }
-
-        utils.setStyles(textContainer, textStyle);
-        // Default text color to progress bar's color
-        if (!textStyle.color) {
-            textContainer.style.color = opts.color;
-        }
-    }
-
-    this._initializeTextContainer(opts, container, textContainer);
-    return textContainer;
-};
-
-// Give custom shapes possibility to modify text element
-Shape.prototype._initializeTextContainer = function(opts, container, element) {
-    // By default, no-op
-    // Custom shapes should respect API options, such as text.style
-};
-
-Shape.prototype._pathString = function _pathString(opts) {
-    throw new Error('Override this function for each progress bar');
-};
-
-Shape.prototype._trailString = function _trailString(opts) {
-    throw new Error('Override this function for each progress bar');
-};
-
-Shape.prototype._warnContainerAspectRatio = function _warnContainerAspectRatio(container) {
-    if (!this.containerAspectRatio) {
-        return;
-    }
-
-    var computedStyle = window.getComputedStyle(container, null);
-    var width = parseFloat(computedStyle.getPropertyValue('width'), 10);
-    var height = parseFloat(computedStyle.getPropertyValue('height'), 10);
-    if (!utils.floatEquals(this.containerAspectRatio, width / height)) {
-        console.warn(
-            'Incorrect aspect ratio of container',
-            '#' + container.id,
-            'detected:',
-            computedStyle.getPropertyValue('width') + '(width)',
-            '/',
-            computedStyle.getPropertyValue('height') + '(height)',
-            '=',
-            width / height
-        );
-
-        console.warn(
-            'Aspect ratio of should be',
-            this.containerAspectRatio
-        );
-    }
-};
-
-module.exports = Shape;
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Circle shaped progress bar
-
-var Shape = __webpack_require__(1);
-var utils = __webpack_require__(0);
-
-var Circle = function Circle(container, options) {
-    // Use two arcs to form a circle
-    // See this answer http://stackoverflow.com/a/10477334/1446092
-    this._pathTemplate =
-        'M 50,50 m 0,-{radius}' +
-        ' a {radius},{radius} 0 1 1 0,{2radius}' +
-        ' a {radius},{radius} 0 1 1 0,-{2radius}';
-
-    this.containerAspectRatio = 1;
-
-    Shape.apply(this, arguments);
-};
-
-Circle.prototype = new Shape();
-Circle.prototype.constructor = Circle;
-
-Circle.prototype._pathString = function _pathString(opts) {
-    var widthOfWider = opts.strokeWidth;
-    if (opts.trailWidth && opts.trailWidth > opts.strokeWidth) {
-        widthOfWider = opts.trailWidth;
-    }
-
-    var r = 50 - widthOfWider / 2;
-
-    return utils.render(this._pathTemplate, {
-        radius: r,
-        '2radius': r * 2
-    });
-};
-
-Circle.prototype._trailString = function _trailString(opts) {
-    return this._pathString(opts);
-};
-
-module.exports = Circle;
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Lower level API to animate any kind of svg path
-
-var Tweenable = __webpack_require__(11);
-var utils = __webpack_require__(0);
-
-var EASING_ALIASES = {
-    easeIn: 'easeInCubic',
-    easeOut: 'easeOutCubic',
-    easeInOut: 'easeInOutCubic'
-};
-
-var Path = function Path(path, opts) {
-    // Throw a better error if not initialized with `new` keyword
-    if (!(this instanceof Path)) {
-        throw new Error('Constructor was called without new keyword');
-    }
-
-    // Default parameters for animation
-    opts = utils.extend({
-        duration: 800,
-        easing: 'linear',
-        from: {},
-        to: {},
-        step: function() {}
-    }, opts);
-
-    var element;
-    if (utils.isString(path)) {
-        element = document.querySelector(path);
-    } else {
-        element = path;
-    }
-
-    // Reveal .path as public attribute
-    this.path = element;
-    this._opts = opts;
-    this._tweenable = null;
-
-    // Set up the starting positions
-    var length = this.path.getTotalLength();
-    this.path.style.strokeDasharray = length + ' ' + length;
-    this.set(0);
-};
-
-Path.prototype.value = function value() {
-    var offset = this._getComputedDashOffset();
-    var length = this.path.getTotalLength();
-
-    var progress = 1 - offset / length;
-    // Round number to prevent returning very small number like 1e-30, which
-    // is practically 0
-    return parseFloat(progress.toFixed(6), 10);
-};
-
-Path.prototype.set = function set(progress) {
-    this.stop();
-
-    this.path.style.strokeDashoffset = this._progressToOffset(progress);
-
-    var step = this._opts.step;
-    if (utils.isFunction(step)) {
-        var easing = this._easing(this._opts.easing);
-        var values = this._calculateTo(progress, easing);
-        var reference = this._opts.shape || this;
-        step(values, reference, this._opts.attachment);
-    }
-};
-
-Path.prototype.stop = function stop() {
-    this._stopTween();
-    this.path.style.strokeDashoffset = this._getComputedDashOffset();
-};
-
-// Method introduced here:
-// http://jakearchibald.com/2013/animated-line-drawing-svg/
-Path.prototype.animate = function animate(progress, opts, cb) {
-    opts = opts || {};
-
-    if (utils.isFunction(opts)) {
-        cb = opts;
-        opts = {};
-    }
-
-    var passedOpts = utils.extend({}, opts);
-
-    // Copy default opts to new object so defaults are not modified
-    var defaultOpts = utils.extend({}, this._opts);
-    opts = utils.extend(defaultOpts, opts);
-
-    var shiftyEasing = this._easing(opts.easing);
-    var values = this._resolveFromAndTo(progress, shiftyEasing, passedOpts);
-
-    this.stop();
-
-    // Trigger a layout so styles are calculated & the browser
-    // picks up the starting position before animating
-    this.path.getBoundingClientRect();
-
-    var offset = this._getComputedDashOffset();
-    var newOffset = this._progressToOffset(progress);
-
-    var self = this;
-    this._tweenable = new Tweenable();
-    this._tweenable.tween({
-        from: utils.extend({ offset: offset }, values.from),
-        to: utils.extend({ offset: newOffset }, values.to),
-        duration: opts.duration,
-        easing: shiftyEasing,
-        step: function(state) {
-            self.path.style.strokeDashoffset = state.offset;
-            var reference = opts.shape || self;
-            opts.step(state, reference, opts.attachment);
-        },
-        finish: function(state) {
-            if (utils.isFunction(cb)) {
-                cb();
-            }
-        }
-    });
-};
-
-Path.prototype._getComputedDashOffset = function _getComputedDashOffset() {
-    var computedStyle = window.getComputedStyle(this.path, null);
-    return parseFloat(computedStyle.getPropertyValue('stroke-dashoffset'), 10);
-};
-
-Path.prototype._progressToOffset = function _progressToOffset(progress) {
-    var length = this.path.getTotalLength();
-    return length - progress * length;
-};
-
-// Resolves from and to values for animation.
-Path.prototype._resolveFromAndTo = function _resolveFromAndTo(progress, easing, opts) {
-    if (opts.from && opts.to) {
-        return {
-            from: opts.from,
-            to: opts.to
-        };
-    }
-
-    return {
-        from: this._calculateFrom(easing),
-        to: this._calculateTo(progress, easing)
-    };
-};
-
-// Calculate `from` values from options passed at initialization
-Path.prototype._calculateFrom = function _calculateFrom(easing) {
-    return Tweenable.interpolate(this._opts.from, this._opts.to, this.value(), easing);
-};
-
-// Calculate `to` values from options passed at initialization
-Path.prototype._calculateTo = function _calculateTo(progress, easing) {
-    return Tweenable.interpolate(this._opts.from, this._opts.to, progress, easing);
-};
-
-Path.prototype._stopTween = function _stopTween() {
-    if (this._tweenable !== null) {
-        this._tweenable.stop();
-        this._tweenable = null;
-    }
-};
-
-Path.prototype._easing = function _easing(easing) {
-    if (EASING_ALIASES.hasOwnProperty(easing)) {
-        return EASING_ALIASES[easing];
-    }
-
-    return easing;
-};
-
-module.exports = Path;
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var ProgressBar = __webpack_require__(9);
-
-var Bars = function () {
-  function Bars(label, id, color, level, duration) {
-    _classCallCheck(this, Bars);
-
-    this.container = id;
-    this.color = color;
-    this.level = level;
-    this.duration = duration;
-    this.label = label;
-    this.createProgressBar();
-  }
-
-  _createClass(Bars, [{
-    key: 'createProgressBar',
-    value: function createProgressBar() {
-      var bar = new ProgressBar.Line(this.container, {
-        strokeWidth: 20,
-        easing: 'easeInOut',
-        duration: this.duration,
-        color: this.color,
-        trailColor: '#eee',
-        trailWidth: 1,
-        svgStyle: { width: '100%', height: '100%' },
-        text: {
-          value: this.label,
-          className: 'progressbar__label',
-          style: {
-            color: '#fff',
-            position: 'absolute',
-            left: '10px',
-            top: '50%',
-            padding: 0,
-            margin: 0,
-            // You can specify styles which will be browser prefixed
-            transform: {
-              prefix: true,
-              value: 'translate(0%, -50%)'
-            }
-          }
-        }
-      });
-      bar.animate(this.level);
-    }
-  }]);
-
-  return Bars;
-}();
-
-module.exports = Bars;
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _jquery = __webpack_require__(7);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var MobileMenu = function () {
-  function MobileMenu() {
-    _classCallCheck(this, MobileMenu);
-
-    this.menuIcon = (0, _jquery2.default)(".header-box__menu-icon");
-    this.menuContent = (0, _jquery2.default)(".header-box__menu-content");
-    this.events();
-  }
-
-  _createClass(MobileMenu, [{
-    key: "events",
-    value: function events() {
-      this.menuIcon.click(this.toggleTheMenu.bind(this));
-    }
-  }, {
-    key: "toggleTheMenu",
-    value: function toggleTheMenu() {
-      this.menuContent.toggleClass("header-box__menu-content--is-visible");
-      this.menuContent.toggleClass("header-box__menu-content--is-expanded");
-      this.menuIcon.toggleClass("header-box__menu-icon--close-x");
-    }
-  }]);
-
-  return MobileMenu;
-}();
-
-module.exports = MobileMenu;
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _MobileMenu = __webpack_require__(5);
-
-var _MobileMenu2 = _interopRequireDefault(_MobileMenu);
-
-var _Bars = __webpack_require__(4);
-
-var _Bars2 = _interopRequireDefault(_Bars);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-new _Bars2.default('PHP', '#php', '#8892BF', 1, 1000);
-new _Bars2.default('JAVASCRIPT', '#javascript', '#9CD4DF', 1, 1500);
-new _Bars2.default('C++', '#c', '#B0C0D0', 1, 2000);
-new _Bars2.default('RUBY', '#ruby', '#E27274', 1, 2500);
-new _Bars2.default('jQUERY', '#jquery', '#347baa', 1, 3000);
-new _Bars2.default('SWIFT', '#swift', '#fca964', 1, 3500);
-new _Bars2.default('JAVA', '#java', '#d15959', 1, 4000);
-new _Bars2.default('MySQL', '#mysql', '#20869D', 1, 4500);
-
-var mm = new _MobileMenu2.default();
-
-/***/ }),
-/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -11154,12 +10470,871 @@ return jQuery;
 
 
 /***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Base object for different progress bar shapes
+
+var Path = __webpack_require__(4);
+var utils = __webpack_require__(0);
+
+var DESTROYED_ERROR = 'Object is destroyed';
+
+var Shape = function Shape(container, opts) {
+    // Throw a better error if progress bars are not initialized with `new`
+    // keyword
+    if (!(this instanceof Shape)) {
+        throw new Error('Constructor was called without new keyword');
+    }
+
+    // Prevent calling constructor without parameters so inheritance
+    // works correctly. To understand, this is how Shape is inherited:
+    //
+    //   Line.prototype = new Shape();
+    //
+    // We just want to set the prototype for Line.
+    if (arguments.length === 0) {
+        return;
+    }
+
+    // Default parameters for progress bar creation
+    this._opts = utils.extend({
+        color: '#555',
+        strokeWidth: 1.0,
+        trailColor: null,
+        trailWidth: null,
+        fill: null,
+        text: {
+            style: {
+                color: null,
+                position: 'absolute',
+                left: '50%',
+                top: '50%',
+                padding: 0,
+                margin: 0,
+                transform: {
+                    prefix: true,
+                    value: 'translate(-50%, -50%)'
+                }
+            },
+            autoStyleContainer: true,
+            alignToBottom: true,
+            value: null,
+            className: 'progressbar-text'
+        },
+        svgStyle: {
+            display: 'block',
+            width: '100%'
+        },
+        warnings: false
+    }, opts, true);  // Use recursive extend
+
+    // If user specifies e.g. svgStyle or text style, the whole object
+    // should replace the defaults to make working with styles easier
+    if (utils.isObject(opts) && opts.svgStyle !== undefined) {
+        this._opts.svgStyle = opts.svgStyle;
+    }
+    if (utils.isObject(opts) && utils.isObject(opts.text) && opts.text.style !== undefined) {
+        this._opts.text.style = opts.text.style;
+    }
+
+    var svgView = this._createSvgView(this._opts);
+
+    var element;
+    if (utils.isString(container)) {
+        element = document.querySelector(container);
+    } else {
+        element = container;
+    }
+
+    if (!element) {
+        throw new Error('Container does not exist: ' + container);
+    }
+
+    this._container = element;
+    this._container.appendChild(svgView.svg);
+    if (this._opts.warnings) {
+        this._warnContainerAspectRatio(this._container);
+    }
+
+    if (this._opts.svgStyle) {
+        utils.setStyles(svgView.svg, this._opts.svgStyle);
+    }
+
+    // Expose public attributes before Path initialization
+    this.svg = svgView.svg;
+    this.path = svgView.path;
+    this.trail = svgView.trail;
+    this.text = null;
+
+    var newOpts = utils.extend({
+        attachment: undefined,
+        shape: this
+    }, this._opts);
+    this._progressPath = new Path(svgView.path, newOpts);
+
+    if (utils.isObject(this._opts.text) && this._opts.text.value !== null) {
+        this.setText(this._opts.text.value);
+    }
+};
+
+Shape.prototype.animate = function animate(progress, opts, cb) {
+    if (this._progressPath === null) {
+        throw new Error(DESTROYED_ERROR);
+    }
+
+    this._progressPath.animate(progress, opts, cb);
+};
+
+Shape.prototype.stop = function stop() {
+    if (this._progressPath === null) {
+        throw new Error(DESTROYED_ERROR);
+    }
+
+    // Don't crash if stop is called inside step function
+    if (this._progressPath === undefined) {
+        return;
+    }
+
+    this._progressPath.stop();
+};
+
+Shape.prototype.destroy = function destroy() {
+    if (this._progressPath === null) {
+        throw new Error(DESTROYED_ERROR);
+    }
+
+    this.stop();
+    this.svg.parentNode.removeChild(this.svg);
+    this.svg = null;
+    this.path = null;
+    this.trail = null;
+    this._progressPath = null;
+
+    if (this.text !== null) {
+        this.text.parentNode.removeChild(this.text);
+        this.text = null;
+    }
+};
+
+Shape.prototype.set = function set(progress) {
+    if (this._progressPath === null) {
+        throw new Error(DESTROYED_ERROR);
+    }
+
+    this._progressPath.set(progress);
+};
+
+Shape.prototype.value = function value() {
+    if (this._progressPath === null) {
+        throw new Error(DESTROYED_ERROR);
+    }
+
+    if (this._progressPath === undefined) {
+        return 0;
+    }
+
+    return this._progressPath.value();
+};
+
+Shape.prototype.setText = function setText(newText) {
+    if (this._progressPath === null) {
+        throw new Error(DESTROYED_ERROR);
+    }
+
+    if (this.text === null) {
+        // Create new text node
+        this.text = this._createTextContainer(this._opts, this._container);
+        this._container.appendChild(this.text);
+    }
+
+    // Remove previous text and add new
+    if (utils.isObject(newText)) {
+        utils.removeChildren(this.text);
+        this.text.appendChild(newText);
+    } else {
+        this.text.innerHTML = newText;
+    }
+};
+
+Shape.prototype._createSvgView = function _createSvgView(opts) {
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    this._initializeSvg(svg, opts);
+
+    var trailPath = null;
+    // Each option listed in the if condition are 'triggers' for creating
+    // the trail path
+    if (opts.trailColor || opts.trailWidth) {
+        trailPath = this._createTrail(opts);
+        svg.appendChild(trailPath);
+    }
+
+    var path = this._createPath(opts);
+    svg.appendChild(path);
+
+    return {
+        svg: svg,
+        path: path,
+        trail: trailPath
+    };
+};
+
+Shape.prototype._initializeSvg = function _initializeSvg(svg, opts) {
+    svg.setAttribute('viewBox', '0 0 100 100');
+};
+
+Shape.prototype._createPath = function _createPath(opts) {
+    var pathString = this._pathString(opts);
+    return this._createPathElement(pathString, opts);
+};
+
+Shape.prototype._createTrail = function _createTrail(opts) {
+    // Create path string with original passed options
+    var pathString = this._trailString(opts);
+
+    // Prevent modifying original
+    var newOpts = utils.extend({}, opts);
+
+    // Defaults for parameters which modify trail path
+    if (!newOpts.trailColor) {
+        newOpts.trailColor = '#eee';
+    }
+    if (!newOpts.trailWidth) {
+        newOpts.trailWidth = newOpts.strokeWidth;
+    }
+
+    newOpts.color = newOpts.trailColor;
+    newOpts.strokeWidth = newOpts.trailWidth;
+
+    // When trail path is set, fill must be set for it instead of the
+    // actual path to prevent trail stroke from clipping
+    newOpts.fill = null;
+
+    return this._createPathElement(pathString, newOpts);
+};
+
+Shape.prototype._createPathElement = function _createPathElement(pathString, opts) {
+    var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', pathString);
+    path.setAttribute('stroke', opts.color);
+    path.setAttribute('stroke-width', opts.strokeWidth);
+
+    if (opts.fill) {
+        path.setAttribute('fill', opts.fill);
+    } else {
+        path.setAttribute('fill-opacity', '0');
+    }
+
+    return path;
+};
+
+Shape.prototype._createTextContainer = function _createTextContainer(opts, container) {
+    var textContainer = document.createElement('div');
+    textContainer.className = opts.text.className;
+
+    var textStyle = opts.text.style;
+    if (textStyle) {
+        if (opts.text.autoStyleContainer) {
+            container.style.position = 'relative';
+        }
+
+        utils.setStyles(textContainer, textStyle);
+        // Default text color to progress bar's color
+        if (!textStyle.color) {
+            textContainer.style.color = opts.color;
+        }
+    }
+
+    this._initializeTextContainer(opts, container, textContainer);
+    return textContainer;
+};
+
+// Give custom shapes possibility to modify text element
+Shape.prototype._initializeTextContainer = function(opts, container, element) {
+    // By default, no-op
+    // Custom shapes should respect API options, such as text.style
+};
+
+Shape.prototype._pathString = function _pathString(opts) {
+    throw new Error('Override this function for each progress bar');
+};
+
+Shape.prototype._trailString = function _trailString(opts) {
+    throw new Error('Override this function for each progress bar');
+};
+
+Shape.prototype._warnContainerAspectRatio = function _warnContainerAspectRatio(container) {
+    if (!this.containerAspectRatio) {
+        return;
+    }
+
+    var computedStyle = window.getComputedStyle(container, null);
+    var width = parseFloat(computedStyle.getPropertyValue('width'), 10);
+    var height = parseFloat(computedStyle.getPropertyValue('height'), 10);
+    if (!utils.floatEquals(this.containerAspectRatio, width / height)) {
+        console.warn(
+            'Incorrect aspect ratio of container',
+            '#' + container.id,
+            'detected:',
+            computedStyle.getPropertyValue('width') + '(width)',
+            '/',
+            computedStyle.getPropertyValue('height') + '(height)',
+            '=',
+            width / height
+        );
+
+        console.warn(
+            'Aspect ratio of should be',
+            this.containerAspectRatio
+        );
+    }
+};
+
+module.exports = Shape;
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Circle shaped progress bar
+
+var Shape = __webpack_require__(2);
+var utils = __webpack_require__(0);
+
+var Circle = function Circle(container, options) {
+    // Use two arcs to form a circle
+    // See this answer http://stackoverflow.com/a/10477334/1446092
+    this._pathTemplate =
+        'M 50,50 m 0,-{radius}' +
+        ' a {radius},{radius} 0 1 1 0,{2radius}' +
+        ' a {radius},{radius} 0 1 1 0,-{2radius}';
+
+    this.containerAspectRatio = 1;
+
+    Shape.apply(this, arguments);
+};
+
+Circle.prototype = new Shape();
+Circle.prototype.constructor = Circle;
+
+Circle.prototype._pathString = function _pathString(opts) {
+    var widthOfWider = opts.strokeWidth;
+    if (opts.trailWidth && opts.trailWidth > opts.strokeWidth) {
+        widthOfWider = opts.trailWidth;
+    }
+
+    var r = 50 - widthOfWider / 2;
+
+    return utils.render(this._pathTemplate, {
+        radius: r,
+        '2radius': r * 2
+    });
+};
+
+Circle.prototype._trailString = function _trailString(opts) {
+    return this._pathString(opts);
+};
+
+module.exports = Circle;
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Lower level API to animate any kind of svg path
+
+var Tweenable = __webpack_require__(14);
+var utils = __webpack_require__(0);
+
+var EASING_ALIASES = {
+    easeIn: 'easeInCubic',
+    easeOut: 'easeOutCubic',
+    easeInOut: 'easeInOutCubic'
+};
+
+var Path = function Path(path, opts) {
+    // Throw a better error if not initialized with `new` keyword
+    if (!(this instanceof Path)) {
+        throw new Error('Constructor was called without new keyword');
+    }
+
+    // Default parameters for animation
+    opts = utils.extend({
+        duration: 800,
+        easing: 'linear',
+        from: {},
+        to: {},
+        step: function() {}
+    }, opts);
+
+    var element;
+    if (utils.isString(path)) {
+        element = document.querySelector(path);
+    } else {
+        element = path;
+    }
+
+    // Reveal .path as public attribute
+    this.path = element;
+    this._opts = opts;
+    this._tweenable = null;
+
+    // Set up the starting positions
+    var length = this.path.getTotalLength();
+    this.path.style.strokeDasharray = length + ' ' + length;
+    this.set(0);
+};
+
+Path.prototype.value = function value() {
+    var offset = this._getComputedDashOffset();
+    var length = this.path.getTotalLength();
+
+    var progress = 1 - offset / length;
+    // Round number to prevent returning very small number like 1e-30, which
+    // is practically 0
+    return parseFloat(progress.toFixed(6), 10);
+};
+
+Path.prototype.set = function set(progress) {
+    this.stop();
+
+    this.path.style.strokeDashoffset = this._progressToOffset(progress);
+
+    var step = this._opts.step;
+    if (utils.isFunction(step)) {
+        var easing = this._easing(this._opts.easing);
+        var values = this._calculateTo(progress, easing);
+        var reference = this._opts.shape || this;
+        step(values, reference, this._opts.attachment);
+    }
+};
+
+Path.prototype.stop = function stop() {
+    this._stopTween();
+    this.path.style.strokeDashoffset = this._getComputedDashOffset();
+};
+
+// Method introduced here:
+// http://jakearchibald.com/2013/animated-line-drawing-svg/
+Path.prototype.animate = function animate(progress, opts, cb) {
+    opts = opts || {};
+
+    if (utils.isFunction(opts)) {
+        cb = opts;
+        opts = {};
+    }
+
+    var passedOpts = utils.extend({}, opts);
+
+    // Copy default opts to new object so defaults are not modified
+    var defaultOpts = utils.extend({}, this._opts);
+    opts = utils.extend(defaultOpts, opts);
+
+    var shiftyEasing = this._easing(opts.easing);
+    var values = this._resolveFromAndTo(progress, shiftyEasing, passedOpts);
+
+    this.stop();
+
+    // Trigger a layout so styles are calculated & the browser
+    // picks up the starting position before animating
+    this.path.getBoundingClientRect();
+
+    var offset = this._getComputedDashOffset();
+    var newOffset = this._progressToOffset(progress);
+
+    var self = this;
+    this._tweenable = new Tweenable();
+    this._tweenable.tween({
+        from: utils.extend({ offset: offset }, values.from),
+        to: utils.extend({ offset: newOffset }, values.to),
+        duration: opts.duration,
+        easing: shiftyEasing,
+        step: function(state) {
+            self.path.style.strokeDashoffset = state.offset;
+            var reference = opts.shape || self;
+            opts.step(state, reference, opts.attachment);
+        },
+        finish: function(state) {
+            if (utils.isFunction(cb)) {
+                cb();
+            }
+        }
+    });
+};
+
+Path.prototype._getComputedDashOffset = function _getComputedDashOffset() {
+    var computedStyle = window.getComputedStyle(this.path, null);
+    return parseFloat(computedStyle.getPropertyValue('stroke-dashoffset'), 10);
+};
+
+Path.prototype._progressToOffset = function _progressToOffset(progress) {
+    var length = this.path.getTotalLength();
+    return length - progress * length;
+};
+
+// Resolves from and to values for animation.
+Path.prototype._resolveFromAndTo = function _resolveFromAndTo(progress, easing, opts) {
+    if (opts.from && opts.to) {
+        return {
+            from: opts.from,
+            to: opts.to
+        };
+    }
+
+    return {
+        from: this._calculateFrom(easing),
+        to: this._calculateTo(progress, easing)
+    };
+};
+
+// Calculate `from` values from options passed at initialization
+Path.prototype._calculateFrom = function _calculateFrom(easing) {
+    return Tweenable.interpolate(this._opts.from, this._opts.to, this.value(), easing);
+};
+
+// Calculate `to` values from options passed at initialization
+Path.prototype._calculateTo = function _calculateTo(progress, easing) {
+    return Tweenable.interpolate(this._opts.from, this._opts.to, progress, easing);
+};
+
+Path.prototype._stopTween = function _stopTween() {
+    if (this._tweenable !== null) {
+        this._tweenable.stop();
+        this._tweenable = null;
+    }
+};
+
+Path.prototype._easing = function _easing(easing) {
+    if (EASING_ALIASES.hasOwnProperty(easing)) {
+        return EASING_ALIASES[easing];
+    }
+
+    return easing;
+};
+
+module.exports = Path;
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ProgressBar = __webpack_require__(12);
+
+var Bars = function () {
+  function Bars(label, id, color, level, duration) {
+    _classCallCheck(this, Bars);
+
+    this.container = id;
+    this.color = color;
+    this.level = level;
+    this.duration = duration;
+    this.label = label;
+    this.createProgressBar();
+  }
+
+  _createClass(Bars, [{
+    key: 'createProgressBar',
+    value: function createProgressBar() {
+      var bar = new ProgressBar.Line(this.container, {
+        strokeWidth: 20,
+        easing: 'easeInOut',
+        duration: this.duration,
+        color: this.color,
+        trailColor: '#eee',
+        trailWidth: 1,
+        svgStyle: { width: '100%', height: '100%' },
+        text: {
+          value: this.label,
+          className: 'progressbar__label',
+          style: {
+            color: '#fff',
+            position: 'absolute',
+            left: '10px',
+            top: '50%',
+            padding: 0,
+            margin: 0,
+            // You can specify styles which will be browser prefixed
+            transform: {
+              prefix: true,
+              value: 'translate(0%, -50%)'
+            }
+          }
+        }
+      });
+      bar.animate(this.level);
+    }
+  }]);
+
+  return Bars;
+}();
+
+module.exports = Bars;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _jquery = __webpack_require__(1);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var MobileMenu = function () {
+  function MobileMenu() {
+    _classCallCheck(this, MobileMenu);
+
+    this.menuIcon = (0, _jquery2.default)(".header-box__menu-icon");
+    this.menuContent = (0, _jquery2.default)(".header-box__menu-content");
+    this.events();
+  }
+
+  _createClass(MobileMenu, [{
+    key: "events",
+    value: function events() {
+      this.menuIcon.click(this.toggleTheMenu.bind(this));
+    }
+  }, {
+    key: "toggleTheMenu",
+    value: function toggleTheMenu() {
+      this.menuContent.toggleClass("header-box__menu-content--is-visible");
+      this.menuContent.toggleClass("header-box__menu-content--is-expanded");
+      this.menuIcon.toggleClass("header-box__menu-icon--close-x");
+    }
+  }]);
+
+  return MobileMenu;
+}();
+
+module.exports = MobileMenu;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _jquery = __webpack_require__(1);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Modal = function () {
+  function Modal() {
+    _classCallCheck(this, Modal);
+
+    this.modalOpen = (0, _jquery2.default)('.modal__open');
+    this.modalClose = (0, _jquery2.default)('.modal__close');
+    this.modal = (0, _jquery2.default)('.modal');
+    this.events();
+  }
+
+  _createClass(Modal, [{
+    key: 'events',
+    value: function events() {
+      this.modalOpen.click(this.openModal.bind(this));
+      this.modalClose.click(this.closeModal.bind(this));
+    }
+  }, {
+    key: 'openModal',
+    value: function openModal() {
+      this.modal.addClass('modal__visible');
+    }
+  }, {
+    key: 'closeModal',
+    value: function closeModal() {
+      this.modal.removeClass('modal__visible');
+    }
+  }]);
+
+  return Modal;
+}();
+
+module.exports = Modal;
+
+/***/ }),
 /* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _jquery = __webpack_require__(1);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var RecentWorks = function () {
+  function RecentWorks() {
+    _classCallCheck(this, RecentWorks);
+
+    this.x = (0, _jquery2.default)('.recent-work-section__projects');
+    this.event();
+  }
+
+  _createClass(RecentWorks, [{
+    key: 'event',
+    value: function event() {
+      var that = this.x;
+      this.x.hover(function () {
+        (0, _jquery2.default)(this).addClass('test');
+      }, function () {
+        (0, _jquery2.default)(this).removeClass('test');
+      });
+    }
+  }]);
+
+  return RecentWorks;
+}();
+
+module.exports = RecentWorks;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _jquery = __webpack_require__(1);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _noframework = __webpack_require__(15);
+
+var _noframework2 = _interopRequireDefault(_noframework);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var RevealOnScroll = function () {
+  function RevealOnScroll(elems, offset) {
+    _classCallCheck(this, RevealOnScroll);
+
+    this.itemsToReveal = elems;
+    this.offsetPercentage = offset;
+    this.hideInitially();
+    this.createWaypoints();
+  }
+
+  _createClass(RevealOnScroll, [{
+    key: 'hideInitially',
+    value: function hideInitially() {
+      this.itemsToReveal.addClass("reveal-item");
+    }
+  }, {
+    key: 'createWaypoints',
+    value: function createWaypoints() {
+      var that = this; // to save the object
+      this.itemsToReveal.each(function () {
+        var currentItem = this;
+        new Waypoint({
+          element: currentItem,
+          handler: function handler() {
+            (0, _jquery2.default)(currentItem).addClass('reveal-item--is-visible');
+          },
+          offset: that.offsetPercentage
+        });
+      });
+    }
+  }]);
+
+  return RevealOnScroll;
+}();
+
+exports.default = RevealOnScroll;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _jquery = __webpack_require__(1);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _MobileMenu = __webpack_require__(6);
+
+var _MobileMenu2 = _interopRequireDefault(_MobileMenu);
+
+var _Bars = __webpack_require__(5);
+
+var _Bars2 = _interopRequireDefault(_Bars);
+
+var _RecentWork = __webpack_require__(8);
+
+var _RecentWork2 = _interopRequireDefault(_RecentWork);
+
+var _Modal = __webpack_require__(7);
+
+var _Modal2 = _interopRequireDefault(_Modal);
+
+var _RevealOnScroll = __webpack_require__(9);
+
+var _RevealOnScroll2 = _interopRequireDefault(_RevealOnScroll);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//new RecentWorks();
+new _Bars2.default('PHP', '#php', '#8892BF', 1, 1000);
+new _Bars2.default('JAVASCRIPT', '#javascript', '#9CD4DF', 1, 1500);
+new _Bars2.default('C++', '#c', '#B0C0D0', 1, 2000);
+new _Bars2.default('RUBY', '#ruby', '#E27274', 1, 2500);
+new _Bars2.default('jQUERY', '#jquery', '#347baa', 1, 3000);
+new _Bars2.default('SWIFT', '#swift', '#fca964', 1, 3500);
+new _Bars2.default('JAVA', '#java', '#d15959', 1, 4000);
+new _Bars2.default('MySQL', '#mysql', '#20869D', 1, 4500);
+
+var mm = new _MobileMenu2.default();
+new _Modal2.default();
+
+new _RevealOnScroll2.default((0, _jquery2.default)(".skills-section__list-item"), "80%");
+new _RevealOnScroll2.default((0, _jquery2.default)(".recent-work-section__projects"), "80%");
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Line shaped progress bar
 
-var Shape = __webpack_require__(1);
+var Shape = __webpack_require__(2);
 var utils = __webpack_require__(0);
 
 var Line = function Line(container, options) {
@@ -11189,22 +11364,22 @@ module.exports = Line;
 
 
 /***/ }),
-/* 9 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = {
     // Higher level API, different shaped progress bars
-    Line: __webpack_require__(8),
-    Circle: __webpack_require__(2),
-    SemiCircle: __webpack_require__(10),
+    Line: __webpack_require__(11),
+    Circle: __webpack_require__(3),
+    SemiCircle: __webpack_require__(13),
 
     // Lower level API to use any SVG path
-    Path: __webpack_require__(3),
+    Path: __webpack_require__(4),
 
     // Base-class for creating new custom shapes
     // to be in line with the API of built-in shapes
     // Undocumented.
-    Shape: __webpack_require__(1),
+    Shape: __webpack_require__(2),
 
     // Internal utils, undocumented.
     utils: __webpack_require__(0)
@@ -11212,13 +11387,13 @@ module.exports = {
 
 
 /***/ }),
-/* 10 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Semi-SemiCircle shaped progress bar
 
-var Shape = __webpack_require__(1);
-var Circle = __webpack_require__(2);
+var Shape = __webpack_require__(2);
+var Circle = __webpack_require__(3);
 var utils = __webpack_require__(0);
 
 var SemiCircle = function SemiCircle(container, options) {
@@ -11266,7 +11441,7 @@ module.exports = SemiCircle;
 
 
 /***/ }),
-/* 11 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* shifty - v1.5.3 - 2016-11-29 - http://jeremyckahn.github.io/shifty */
@@ -12921,6 +13096,769 @@ var Tweenable = (function () {
 
 }).call(null);
 
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports) {
+
+/*!
+Waypoints - 4.0.1
+Copyright © 2011-2016 Caleb Troughton
+Licensed under the MIT license.
+https://github.com/imakewebthings/waypoints/blob/master/licenses.txt
+*/
+(function() {
+  'use strict'
+
+  var keyCounter = 0
+  var allWaypoints = {}
+
+  /* http://imakewebthings.com/waypoints/api/waypoint */
+  function Waypoint(options) {
+    if (!options) {
+      throw new Error('No options passed to Waypoint constructor')
+    }
+    if (!options.element) {
+      throw new Error('No element option passed to Waypoint constructor')
+    }
+    if (!options.handler) {
+      throw new Error('No handler option passed to Waypoint constructor')
+    }
+
+    this.key = 'waypoint-' + keyCounter
+    this.options = Waypoint.Adapter.extend({}, Waypoint.defaults, options)
+    this.element = this.options.element
+    this.adapter = new Waypoint.Adapter(this.element)
+    this.callback = options.handler
+    this.axis = this.options.horizontal ? 'horizontal' : 'vertical'
+    this.enabled = this.options.enabled
+    this.triggerPoint = null
+    this.group = Waypoint.Group.findOrCreate({
+      name: this.options.group,
+      axis: this.axis
+    })
+    this.context = Waypoint.Context.findOrCreateByElement(this.options.context)
+
+    if (Waypoint.offsetAliases[this.options.offset]) {
+      this.options.offset = Waypoint.offsetAliases[this.options.offset]
+    }
+    this.group.add(this)
+    this.context.add(this)
+    allWaypoints[this.key] = this
+    keyCounter += 1
+  }
+
+  /* Private */
+  Waypoint.prototype.queueTrigger = function(direction) {
+    this.group.queueTrigger(this, direction)
+  }
+
+  /* Private */
+  Waypoint.prototype.trigger = function(args) {
+    if (!this.enabled) {
+      return
+    }
+    if (this.callback) {
+      this.callback.apply(this, args)
+    }
+  }
+
+  /* Public */
+  /* http://imakewebthings.com/waypoints/api/destroy */
+  Waypoint.prototype.destroy = function() {
+    this.context.remove(this)
+    this.group.remove(this)
+    delete allWaypoints[this.key]
+  }
+
+  /* Public */
+  /* http://imakewebthings.com/waypoints/api/disable */
+  Waypoint.prototype.disable = function() {
+    this.enabled = false
+    return this
+  }
+
+  /* Public */
+  /* http://imakewebthings.com/waypoints/api/enable */
+  Waypoint.prototype.enable = function() {
+    this.context.refresh()
+    this.enabled = true
+    return this
+  }
+
+  /* Public */
+  /* http://imakewebthings.com/waypoints/api/next */
+  Waypoint.prototype.next = function() {
+    return this.group.next(this)
+  }
+
+  /* Public */
+  /* http://imakewebthings.com/waypoints/api/previous */
+  Waypoint.prototype.previous = function() {
+    return this.group.previous(this)
+  }
+
+  /* Private */
+  Waypoint.invokeAll = function(method) {
+    var allWaypointsArray = []
+    for (var waypointKey in allWaypoints) {
+      allWaypointsArray.push(allWaypoints[waypointKey])
+    }
+    for (var i = 0, end = allWaypointsArray.length; i < end; i++) {
+      allWaypointsArray[i][method]()
+    }
+  }
+
+  /* Public */
+  /* http://imakewebthings.com/waypoints/api/destroy-all */
+  Waypoint.destroyAll = function() {
+    Waypoint.invokeAll('destroy')
+  }
+
+  /* Public */
+  /* http://imakewebthings.com/waypoints/api/disable-all */
+  Waypoint.disableAll = function() {
+    Waypoint.invokeAll('disable')
+  }
+
+  /* Public */
+  /* http://imakewebthings.com/waypoints/api/enable-all */
+  Waypoint.enableAll = function() {
+    Waypoint.Context.refreshAll()
+    for (var waypointKey in allWaypoints) {
+      allWaypoints[waypointKey].enabled = true
+    }
+    return this
+  }
+
+  /* Public */
+  /* http://imakewebthings.com/waypoints/api/refresh-all */
+  Waypoint.refreshAll = function() {
+    Waypoint.Context.refreshAll()
+  }
+
+  /* Public */
+  /* http://imakewebthings.com/waypoints/api/viewport-height */
+  Waypoint.viewportHeight = function() {
+    return window.innerHeight || document.documentElement.clientHeight
+  }
+
+  /* Public */
+  /* http://imakewebthings.com/waypoints/api/viewport-width */
+  Waypoint.viewportWidth = function() {
+    return document.documentElement.clientWidth
+  }
+
+  Waypoint.adapters = []
+
+  Waypoint.defaults = {
+    context: window,
+    continuous: true,
+    enabled: true,
+    group: 'default',
+    horizontal: false,
+    offset: 0
+  }
+
+  Waypoint.offsetAliases = {
+    'bottom-in-view': function() {
+      return this.context.innerHeight() - this.adapter.outerHeight()
+    },
+    'right-in-view': function() {
+      return this.context.innerWidth() - this.adapter.outerWidth()
+    }
+  }
+
+  window.Waypoint = Waypoint
+}())
+;(function() {
+  'use strict'
+
+  function requestAnimationFrameShim(callback) {
+    window.setTimeout(callback, 1000 / 60)
+  }
+
+  var keyCounter = 0
+  var contexts = {}
+  var Waypoint = window.Waypoint
+  var oldWindowLoad = window.onload
+
+  /* http://imakewebthings.com/waypoints/api/context */
+  function Context(element) {
+    this.element = element
+    this.Adapter = Waypoint.Adapter
+    this.adapter = new this.Adapter(element)
+    this.key = 'waypoint-context-' + keyCounter
+    this.didScroll = false
+    this.didResize = false
+    this.oldScroll = {
+      x: this.adapter.scrollLeft(),
+      y: this.adapter.scrollTop()
+    }
+    this.waypoints = {
+      vertical: {},
+      horizontal: {}
+    }
+
+    element.waypointContextKey = this.key
+    contexts[element.waypointContextKey] = this
+    keyCounter += 1
+    if (!Waypoint.windowContext) {
+      Waypoint.windowContext = true
+      Waypoint.windowContext = new Context(window)
+    }
+
+    this.createThrottledScrollHandler()
+    this.createThrottledResizeHandler()
+  }
+
+  /* Private */
+  Context.prototype.add = function(waypoint) {
+    var axis = waypoint.options.horizontal ? 'horizontal' : 'vertical'
+    this.waypoints[axis][waypoint.key] = waypoint
+    this.refresh()
+  }
+
+  /* Private */
+  Context.prototype.checkEmpty = function() {
+    var horizontalEmpty = this.Adapter.isEmptyObject(this.waypoints.horizontal)
+    var verticalEmpty = this.Adapter.isEmptyObject(this.waypoints.vertical)
+    var isWindow = this.element == this.element.window
+    if (horizontalEmpty && verticalEmpty && !isWindow) {
+      this.adapter.off('.waypoints')
+      delete contexts[this.key]
+    }
+  }
+
+  /* Private */
+  Context.prototype.createThrottledResizeHandler = function() {
+    var self = this
+
+    function resizeHandler() {
+      self.handleResize()
+      self.didResize = false
+    }
+
+    this.adapter.on('resize.waypoints', function() {
+      if (!self.didResize) {
+        self.didResize = true
+        Waypoint.requestAnimationFrame(resizeHandler)
+      }
+    })
+  }
+
+  /* Private */
+  Context.prototype.createThrottledScrollHandler = function() {
+    var self = this
+    function scrollHandler() {
+      self.handleScroll()
+      self.didScroll = false
+    }
+
+    this.adapter.on('scroll.waypoints', function() {
+      if (!self.didScroll || Waypoint.isTouch) {
+        self.didScroll = true
+        Waypoint.requestAnimationFrame(scrollHandler)
+      }
+    })
+  }
+
+  /* Private */
+  Context.prototype.handleResize = function() {
+    Waypoint.Context.refreshAll()
+  }
+
+  /* Private */
+  Context.prototype.handleScroll = function() {
+    var triggeredGroups = {}
+    var axes = {
+      horizontal: {
+        newScroll: this.adapter.scrollLeft(),
+        oldScroll: this.oldScroll.x,
+        forward: 'right',
+        backward: 'left'
+      },
+      vertical: {
+        newScroll: this.adapter.scrollTop(),
+        oldScroll: this.oldScroll.y,
+        forward: 'down',
+        backward: 'up'
+      }
+    }
+
+    for (var axisKey in axes) {
+      var axis = axes[axisKey]
+      var isForward = axis.newScroll > axis.oldScroll
+      var direction = isForward ? axis.forward : axis.backward
+
+      for (var waypointKey in this.waypoints[axisKey]) {
+        var waypoint = this.waypoints[axisKey][waypointKey]
+        if (waypoint.triggerPoint === null) {
+          continue
+        }
+        var wasBeforeTriggerPoint = axis.oldScroll < waypoint.triggerPoint
+        var nowAfterTriggerPoint = axis.newScroll >= waypoint.triggerPoint
+        var crossedForward = wasBeforeTriggerPoint && nowAfterTriggerPoint
+        var crossedBackward = !wasBeforeTriggerPoint && !nowAfterTriggerPoint
+        if (crossedForward || crossedBackward) {
+          waypoint.queueTrigger(direction)
+          triggeredGroups[waypoint.group.id] = waypoint.group
+        }
+      }
+    }
+
+    for (var groupKey in triggeredGroups) {
+      triggeredGroups[groupKey].flushTriggers()
+    }
+
+    this.oldScroll = {
+      x: axes.horizontal.newScroll,
+      y: axes.vertical.newScroll
+    }
+  }
+
+  /* Private */
+  Context.prototype.innerHeight = function() {
+    /*eslint-disable eqeqeq */
+    if (this.element == this.element.window) {
+      return Waypoint.viewportHeight()
+    }
+    /*eslint-enable eqeqeq */
+    return this.adapter.innerHeight()
+  }
+
+  /* Private */
+  Context.prototype.remove = function(waypoint) {
+    delete this.waypoints[waypoint.axis][waypoint.key]
+    this.checkEmpty()
+  }
+
+  /* Private */
+  Context.prototype.innerWidth = function() {
+    /*eslint-disable eqeqeq */
+    if (this.element == this.element.window) {
+      return Waypoint.viewportWidth()
+    }
+    /*eslint-enable eqeqeq */
+    return this.adapter.innerWidth()
+  }
+
+  /* Public */
+  /* http://imakewebthings.com/waypoints/api/context-destroy */
+  Context.prototype.destroy = function() {
+    var allWaypoints = []
+    for (var axis in this.waypoints) {
+      for (var waypointKey in this.waypoints[axis]) {
+        allWaypoints.push(this.waypoints[axis][waypointKey])
+      }
+    }
+    for (var i = 0, end = allWaypoints.length; i < end; i++) {
+      allWaypoints[i].destroy()
+    }
+  }
+
+  /* Public */
+  /* http://imakewebthings.com/waypoints/api/context-refresh */
+  Context.prototype.refresh = function() {
+    /*eslint-disable eqeqeq */
+    var isWindow = this.element == this.element.window
+    /*eslint-enable eqeqeq */
+    var contextOffset = isWindow ? undefined : this.adapter.offset()
+    var triggeredGroups = {}
+    var axes
+
+    this.handleScroll()
+    axes = {
+      horizontal: {
+        contextOffset: isWindow ? 0 : contextOffset.left,
+        contextScroll: isWindow ? 0 : this.oldScroll.x,
+        contextDimension: this.innerWidth(),
+        oldScroll: this.oldScroll.x,
+        forward: 'right',
+        backward: 'left',
+        offsetProp: 'left'
+      },
+      vertical: {
+        contextOffset: isWindow ? 0 : contextOffset.top,
+        contextScroll: isWindow ? 0 : this.oldScroll.y,
+        contextDimension: this.innerHeight(),
+        oldScroll: this.oldScroll.y,
+        forward: 'down',
+        backward: 'up',
+        offsetProp: 'top'
+      }
+    }
+
+    for (var axisKey in axes) {
+      var axis = axes[axisKey]
+      for (var waypointKey in this.waypoints[axisKey]) {
+        var waypoint = this.waypoints[axisKey][waypointKey]
+        var adjustment = waypoint.options.offset
+        var oldTriggerPoint = waypoint.triggerPoint
+        var elementOffset = 0
+        var freshWaypoint = oldTriggerPoint == null
+        var contextModifier, wasBeforeScroll, nowAfterScroll
+        var triggeredBackward, triggeredForward
+
+        if (waypoint.element !== waypoint.element.window) {
+          elementOffset = waypoint.adapter.offset()[axis.offsetProp]
+        }
+
+        if (typeof adjustment === 'function') {
+          adjustment = adjustment.apply(waypoint)
+        }
+        else if (typeof adjustment === 'string') {
+          adjustment = parseFloat(adjustment)
+          if (waypoint.options.offset.indexOf('%') > - 1) {
+            adjustment = Math.ceil(axis.contextDimension * adjustment / 100)
+          }
+        }
+
+        contextModifier = axis.contextScroll - axis.contextOffset
+        waypoint.triggerPoint = Math.floor(elementOffset + contextModifier - adjustment)
+        wasBeforeScroll = oldTriggerPoint < axis.oldScroll
+        nowAfterScroll = waypoint.triggerPoint >= axis.oldScroll
+        triggeredBackward = wasBeforeScroll && nowAfterScroll
+        triggeredForward = !wasBeforeScroll && !nowAfterScroll
+
+        if (!freshWaypoint && triggeredBackward) {
+          waypoint.queueTrigger(axis.backward)
+          triggeredGroups[waypoint.group.id] = waypoint.group
+        }
+        else if (!freshWaypoint && triggeredForward) {
+          waypoint.queueTrigger(axis.forward)
+          triggeredGroups[waypoint.group.id] = waypoint.group
+        }
+        else if (freshWaypoint && axis.oldScroll >= waypoint.triggerPoint) {
+          waypoint.queueTrigger(axis.forward)
+          triggeredGroups[waypoint.group.id] = waypoint.group
+        }
+      }
+    }
+
+    Waypoint.requestAnimationFrame(function() {
+      for (var groupKey in triggeredGroups) {
+        triggeredGroups[groupKey].flushTriggers()
+      }
+    })
+
+    return this
+  }
+
+  /* Private */
+  Context.findOrCreateByElement = function(element) {
+    return Context.findByElement(element) || new Context(element)
+  }
+
+  /* Private */
+  Context.refreshAll = function() {
+    for (var contextId in contexts) {
+      contexts[contextId].refresh()
+    }
+  }
+
+  /* Public */
+  /* http://imakewebthings.com/waypoints/api/context-find-by-element */
+  Context.findByElement = function(element) {
+    return contexts[element.waypointContextKey]
+  }
+
+  window.onload = function() {
+    if (oldWindowLoad) {
+      oldWindowLoad()
+    }
+    Context.refreshAll()
+  }
+
+
+  Waypoint.requestAnimationFrame = function(callback) {
+    var requestFn = window.requestAnimationFrame ||
+      window.mozRequestAnimationFrame ||
+      window.webkitRequestAnimationFrame ||
+      requestAnimationFrameShim
+    requestFn.call(window, callback)
+  }
+  Waypoint.Context = Context
+}())
+;(function() {
+  'use strict'
+
+  function byTriggerPoint(a, b) {
+    return a.triggerPoint - b.triggerPoint
+  }
+
+  function byReverseTriggerPoint(a, b) {
+    return b.triggerPoint - a.triggerPoint
+  }
+
+  var groups = {
+    vertical: {},
+    horizontal: {}
+  }
+  var Waypoint = window.Waypoint
+
+  /* http://imakewebthings.com/waypoints/api/group */
+  function Group(options) {
+    this.name = options.name
+    this.axis = options.axis
+    this.id = this.name + '-' + this.axis
+    this.waypoints = []
+    this.clearTriggerQueues()
+    groups[this.axis][this.name] = this
+  }
+
+  /* Private */
+  Group.prototype.add = function(waypoint) {
+    this.waypoints.push(waypoint)
+  }
+
+  /* Private */
+  Group.prototype.clearTriggerQueues = function() {
+    this.triggerQueues = {
+      up: [],
+      down: [],
+      left: [],
+      right: []
+    }
+  }
+
+  /* Private */
+  Group.prototype.flushTriggers = function() {
+    for (var direction in this.triggerQueues) {
+      var waypoints = this.triggerQueues[direction]
+      var reverse = direction === 'up' || direction === 'left'
+      waypoints.sort(reverse ? byReverseTriggerPoint : byTriggerPoint)
+      for (var i = 0, end = waypoints.length; i < end; i += 1) {
+        var waypoint = waypoints[i]
+        if (waypoint.options.continuous || i === waypoints.length - 1) {
+          waypoint.trigger([direction])
+        }
+      }
+    }
+    this.clearTriggerQueues()
+  }
+
+  /* Private */
+  Group.prototype.next = function(waypoint) {
+    this.waypoints.sort(byTriggerPoint)
+    var index = Waypoint.Adapter.inArray(waypoint, this.waypoints)
+    var isLast = index === this.waypoints.length - 1
+    return isLast ? null : this.waypoints[index + 1]
+  }
+
+  /* Private */
+  Group.prototype.previous = function(waypoint) {
+    this.waypoints.sort(byTriggerPoint)
+    var index = Waypoint.Adapter.inArray(waypoint, this.waypoints)
+    return index ? this.waypoints[index - 1] : null
+  }
+
+  /* Private */
+  Group.prototype.queueTrigger = function(waypoint, direction) {
+    this.triggerQueues[direction].push(waypoint)
+  }
+
+  /* Private */
+  Group.prototype.remove = function(waypoint) {
+    var index = Waypoint.Adapter.inArray(waypoint, this.waypoints)
+    if (index > -1) {
+      this.waypoints.splice(index, 1)
+    }
+  }
+
+  /* Public */
+  /* http://imakewebthings.com/waypoints/api/first */
+  Group.prototype.first = function() {
+    return this.waypoints[0]
+  }
+
+  /* Public */
+  /* http://imakewebthings.com/waypoints/api/last */
+  Group.prototype.last = function() {
+    return this.waypoints[this.waypoints.length - 1]
+  }
+
+  /* Private */
+  Group.findOrCreate = function(options) {
+    return groups[options.axis][options.name] || new Group(options)
+  }
+
+  Waypoint.Group = Group
+}())
+;(function() {
+  'use strict'
+
+  var Waypoint = window.Waypoint
+
+  function isWindow(element) {
+    return element === element.window
+  }
+
+  function getWindow(element) {
+    if (isWindow(element)) {
+      return element
+    }
+    return element.defaultView
+  }
+
+  function NoFrameworkAdapter(element) {
+    this.element = element
+    this.handlers = {}
+  }
+
+  NoFrameworkAdapter.prototype.innerHeight = function() {
+    var isWin = isWindow(this.element)
+    return isWin ? this.element.innerHeight : this.element.clientHeight
+  }
+
+  NoFrameworkAdapter.prototype.innerWidth = function() {
+    var isWin = isWindow(this.element)
+    return isWin ? this.element.innerWidth : this.element.clientWidth
+  }
+
+  NoFrameworkAdapter.prototype.off = function(event, handler) {
+    function removeListeners(element, listeners, handler) {
+      for (var i = 0, end = listeners.length - 1; i < end; i++) {
+        var listener = listeners[i]
+        if (!handler || handler === listener) {
+          element.removeEventListener(listener)
+        }
+      }
+    }
+
+    var eventParts = event.split('.')
+    var eventType = eventParts[0]
+    var namespace = eventParts[1]
+    var element = this.element
+
+    if (namespace && this.handlers[namespace] && eventType) {
+      removeListeners(element, this.handlers[namespace][eventType], handler)
+      this.handlers[namespace][eventType] = []
+    }
+    else if (eventType) {
+      for (var ns in this.handlers) {
+        removeListeners(element, this.handlers[ns][eventType] || [], handler)
+        this.handlers[ns][eventType] = []
+      }
+    }
+    else if (namespace && this.handlers[namespace]) {
+      for (var type in this.handlers[namespace]) {
+        removeListeners(element, this.handlers[namespace][type], handler)
+      }
+      this.handlers[namespace] = {}
+    }
+  }
+
+  /* Adapted from jQuery 1.x offset() */
+  NoFrameworkAdapter.prototype.offset = function() {
+    if (!this.element.ownerDocument) {
+      return null
+    }
+
+    var documentElement = this.element.ownerDocument.documentElement
+    var win = getWindow(this.element.ownerDocument)
+    var rect = {
+      top: 0,
+      left: 0
+    }
+
+    if (this.element.getBoundingClientRect) {
+      rect = this.element.getBoundingClientRect()
+    }
+
+    return {
+      top: rect.top + win.pageYOffset - documentElement.clientTop,
+      left: rect.left + win.pageXOffset - documentElement.clientLeft
+    }
+  }
+
+  NoFrameworkAdapter.prototype.on = function(event, handler) {
+    var eventParts = event.split('.')
+    var eventType = eventParts[0]
+    var namespace = eventParts[1] || '__default'
+    var nsHandlers = this.handlers[namespace] = this.handlers[namespace] || {}
+    var nsTypeList = nsHandlers[eventType] = nsHandlers[eventType] || []
+
+    nsTypeList.push(handler)
+    this.element.addEventListener(eventType, handler)
+  }
+
+  NoFrameworkAdapter.prototype.outerHeight = function(includeMargin) {
+    var height = this.innerHeight()
+    var computedStyle
+
+    if (includeMargin && !isWindow(this.element)) {
+      computedStyle = window.getComputedStyle(this.element)
+      height += parseInt(computedStyle.marginTop, 10)
+      height += parseInt(computedStyle.marginBottom, 10)
+    }
+
+    return height
+  }
+
+  NoFrameworkAdapter.prototype.outerWidth = function(includeMargin) {
+    var width = this.innerWidth()
+    var computedStyle
+
+    if (includeMargin && !isWindow(this.element)) {
+      computedStyle = window.getComputedStyle(this.element)
+      width += parseInt(computedStyle.marginLeft, 10)
+      width += parseInt(computedStyle.marginRight, 10)
+    }
+
+    return width
+  }
+
+  NoFrameworkAdapter.prototype.scrollLeft = function() {
+    var win = getWindow(this.element)
+    return win ? win.pageXOffset : this.element.scrollLeft
+  }
+
+  NoFrameworkAdapter.prototype.scrollTop = function() {
+    var win = getWindow(this.element)
+    return win ? win.pageYOffset : this.element.scrollTop
+  }
+
+  NoFrameworkAdapter.extend = function() {
+    var args = Array.prototype.slice.call(arguments)
+
+    function merge(target, obj) {
+      if (typeof target === 'object' && typeof obj === 'object') {
+        for (var key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            target[key] = obj[key]
+          }
+        }
+      }
+
+      return target
+    }
+
+    for (var i = 1, end = args.length; i < end; i++) {
+      merge(args[0], args[i])
+    }
+    return args[0]
+  }
+
+  NoFrameworkAdapter.inArray = function(element, array, i) {
+    return array == null ? -1 : array.indexOf(element, i)
+  }
+
+  NoFrameworkAdapter.isEmptyObject = function(obj) {
+    /* eslint no-unused-vars: 0 */
+    for (var name in obj) {
+      return false
+    }
+    return true
+  }
+
+  Waypoint.adapters.push({
+    name: 'noframework',
+    Adapter: NoFrameworkAdapter
+  })
+  Waypoint.Adapter = NoFrameworkAdapter
+}())
+;
 
 /***/ })
 /******/ ]);
