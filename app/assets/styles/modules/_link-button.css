@@ -21,4 +21,8 @@
   &--green{
     background-color: #2ecc71;
   }
+
+  &--light-green{
+    background-color: #48929B;
+  }
 }

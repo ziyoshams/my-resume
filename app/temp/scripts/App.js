@@ -11313,21 +11313,21 @@ var _RevealOnScroll2 = _interopRequireDefault(_RevealOnScroll);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //new RecentWorks();
-new _Bars2.default('PHP', '#php', '#8892BF', 1, 1000);
-new _Bars2.default('JAVASCRIPT', '#javascript', '#9CD4DF', 1, 1500);
-new _Bars2.default('C++', '#c', '#B0C0D0', 1, 2000);
-new _Bars2.default('RUBY', '#ruby', '#E27274', 1, 2500);
-new _Bars2.default('jQUERY', '#jquery', '#347baa', 1, 3000);
-new _Bars2.default('SWIFT', '#swift', '#fca964', 1, 3500);
-new _Bars2.default('JAVA', '#java', '#d15959', 1, 4000);
-new _Bars2.default('MySQL', '#mysql', '#20869D', 1, 4500);
+// new Bars('PHP' ,'#php', '#8892BF', 1, 1000);
+// new Bars('JAVASCRIPT' ,'#javascript', '#9CD4DF', 1, 1500);
+// new Bars('C++' ,'#c', '#B0C0D0', 1, 2000);
+// new Bars('RUBY' ,'#ruby', '#E27274', 1, 2500);
+// new Bars('jQUERY' ,'#jquery', '#347baa', 1, 3000);
+// new Bars('SWIFT' ,'#swift', '#fca964', 1, 3500);
+// new Bars('JAVA' ,'#java', '#d15959', 1, 4000);
+// new Bars('MySQL' ,'#mysql', '#20869D', 1, 4500);
 
-var mm = new _MobileMenu2.default();
+new _MobileMenu2.default();
 new _Modal2.default();
 
-new _RevealOnScroll2.default((0, _jquery2.default)(".skills-section__left-item-container"), "80%");
-new _RevealOnScroll2.default((0, _jquery2.default)(".skills-section__left-item-container"), "80%");
 new _RevealOnScroll2.default((0, _jquery2.default)(".recent-work-section__projects"), "80%");
+new _RevealOnScroll2.default((0, _jquery2.default)(".skills-section__left-item-container"), "80%");
+new _RevealOnScroll2.default((0, _jquery2.default)(".skills-section__right-item-container"), "80%");
 
 /***/ }),
 /* 11 */

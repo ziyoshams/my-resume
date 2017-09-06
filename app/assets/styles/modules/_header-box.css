@@ -35,6 +35,10 @@
     @mixin atLarge{
       width: 70px;
       height: 70px;
+      background-color: #53b4bf;
+      border-radius: 20px;
+      border-left: 5px solid #53b4bf;
+      border-right: 5px solid #53b4bf;
     }
 
   }
