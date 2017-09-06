@@ -31,16 +31,16 @@
 
       &__description{
         font-size: 1rem;
-        line-height: 1.4;
+        line-height: 1.6;
         font-weight: 300;
         text-indent: 15px;
 
         @mixin atMedium{
-          font-size: 1.175rem;
+          font-size: 1rem;
         }
 
         @mixin atLarge{
-          font-size: 1.2rem;
+          font-size: 1.1rem;
         }
       }
     }

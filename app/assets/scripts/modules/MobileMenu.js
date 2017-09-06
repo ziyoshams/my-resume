@@ -4,11 +4,13 @@ class MobileMenu{
   constructor(){
       this.menuIcon = $(".header-box__menu-icon");
       this.menuContent = $(".header-box__menu-content");
+      this.buttonClicked = $(".primary-nav a");
       this.events();
   }
 
   events(){
     this.menuIcon.click(this.toggleTheMenu.bind(this));
+    this.buttonClicked.click(this.removeTheMenu.bind(this));
   }
 
   toggleTheMenu(){
@@ -17,6 +19,11 @@ class MobileMenu{
     this.menuIcon.toggleClass("header-box__menu-icon--close-x");
   }
 
+  removeTheMenu(){
+    this.menuContent.removeClass("header-box__menu-content--is-visible");
+    this.menuContent.removeClass("header-box__menu-content--is-expanded");
+    this.menuIcon.removeClass("header-box__menu-icon--close-x");
+  }
 }
 
 module.exports = MobileMenu;

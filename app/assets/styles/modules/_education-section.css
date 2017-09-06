@@ -4,6 +4,7 @@
   height: 100%;
 
   &__schools{
+    margin-bottom: 30px;
 
     @mixin atMedium{
       display: flex;
@@ -13,13 +14,22 @@
 
   &--info{
     padding: 15px;
+
+
   }
 
   &--header{
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     font-weight: 400;
     color: #383538;
     margin: 0;
+
+    @mixin atMedium{
+      font-size: 1.3rem;
+    }
+    @mixin atLarge{
+      font-size: 1.4rem;
+    }
 
     & a{
       color: inherit;
@@ -28,18 +38,20 @@
   }
 
   &--title{
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 300;
 
+    @mixin atMedium{
+      font-size: 1.1rem;
+    }
   }
 
-
   &--school-section{
-    height: 100px;
+    min-height: 100px;
     width: 100%;
     margin: 10px;
-    min-width: 300px;
-
+    min-width: 200px;
+    box-sizing: border-box;
     @mixin atMedium{
       flex:1;
       height: 150px;
