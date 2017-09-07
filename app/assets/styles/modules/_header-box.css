@@ -133,7 +133,7 @@
       transition: transform 0.3s ease-out;
     }
 
-    @mixin atLarge{
+    @mixin atMedium{
       display: none;
     }
   }
