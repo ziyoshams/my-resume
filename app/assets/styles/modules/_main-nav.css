@@ -1,5 +1,6 @@
 .primary-nav{
   padding-top: 15px;
+  display: none;
 
   @mixin atMedium{
     padding-top: 0;
@@ -18,6 +19,9 @@
 
   }
 
+  &--is-visible{
+    display: block;
+  }
 
   ul{
     margin:auto;
@@ -41,6 +45,9 @@
 
     &:hover{
       background: #4C6475;
+    }
+    @mixin atSmall{
+
     }
 
     @mixin atMedium{
@@ -88,7 +95,7 @@
 
   a{
     margin: auto;
-    color: #ecf0f1;
+    color: #353538;
     font-weight: 400;
     text-decoration:none;
     padding: 8px 10px;
