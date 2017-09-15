@@ -14,8 +14,6 @@
 
   &--info{
     padding: 15px;
-
-
   }
 
   &--header{
@@ -52,6 +50,7 @@
     margin: 10px;
     min-width: 200px;
     box-sizing: border-box;
+
     @mixin atMedium{
       flex:1;
       height: 150px;
