@@ -5,9 +5,8 @@
   background-repeat: no-repeat;
   background-size: contain;
   background-attachment: fixed;
-
-
-
+  line-height: 1.6;
+  
   &__left{
     float:none;
 
