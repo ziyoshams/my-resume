@@ -5,10 +5,11 @@
   background-repeat: no-repeat;
   background-size: contain;
   background-attachment: fixed;
-  line-height: 1.6;
-  
+
   &__left{
     float:none;
+    line-height: 1.4;
+    font-weight: 300;
 
     @mixin atLarge{
       float: left;
@@ -28,7 +29,6 @@
       }
     }
 
-
     &__logo{
       font-size: 5rem;
       text-align: center;
@@ -43,7 +43,9 @@
 
   &__right{
     float:none;
-
+    line-height: 1.4;
+    font-weight: 300;
+    
     @mixin atLarge{
       float: left;
       width: 50%;

@@ -12,6 +12,6 @@ new Modal();
 new SmoothScroll();
 new StickyHeader();
 
-new RevealOnScroll($(".recent-work-section__projects"), "80%");
-new RevealOnScroll($(".skills-section__left-item-container"), "80%");
-new RevealOnScroll($(".skills-section__right-item-container"), "80%");
+// new RevealOnScroll($(".recent-work-section__projects"), "80%");
+// new RevealOnScroll($(".skills-section__left-item-container"), "80%");
+// new RevealOnScroll($(".skills-section__right-item-container"), "80%");

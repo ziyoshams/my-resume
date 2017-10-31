@@ -496,6 +496,7 @@ html, body{
 
   .header-box {
     padding: 0;
+    min-height: 700px;
     height: 100vh;
   }
 }
@@ -572,6 +573,8 @@ html, body{
 }
 
 .header-box__menu-content--dark{
+  -webkit-transition: all 300ms ease-in;
+  transition: all 300ms ease-in;
   position: fixed;
   opacity: 1;
   z-index: 9;
@@ -898,7 +901,6 @@ html, body{
   background-repeat: no-repeat;
   background-size: contain;
   background-attachment: fixed;
-  line-height: 1.6;
 
 }
 
@@ -910,6 +912,8 @@ html, body{
 
 .skills-section__left{
   float:none;
+  line-height: 1.4;
+  font-weight: 300;
 }
 
 @media(min-width:1010px) {
@@ -963,6 +967,8 @@ html, body{
 
 .skills-section__right{
   float:none;
+  line-height: 1.4;
+  font-weight: 300;
 }
 
 @media(min-width:1010px) {

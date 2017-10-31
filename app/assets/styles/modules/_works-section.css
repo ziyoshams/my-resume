@@ -1,6 +1,6 @@
 
 .recent-work-section{
-  background: #ECF0F1;
+  background: #ecf0f1;
   position: relative;
 
   &__works{
@@ -16,7 +16,6 @@
     }
   }
 
-
   &__projects{
     flex-basis: 100%;
     flex-grow: 1;
@@ -28,8 +27,6 @@
     position: relative;
     margin-bottom: 10px;
     transition: all 500ms ease-in;
-
-
 
     @mixin atLarge{
       flex-basis: 45%;

@@ -11445,9 +11445,9 @@ new _Modal2.default();
 new _SmoothScroll2.default();
 new _StickyHeader2.default();
 
-new _RevealOnScroll2.default((0, _jquery2.default)(".recent-work-section__projects"), "80%");
-new _RevealOnScroll2.default((0, _jquery2.default)(".skills-section__left-item-container"), "80%");
-new _RevealOnScroll2.default((0, _jquery2.default)(".skills-section__right-item-container"), "80%");
+// new RevealOnScroll($(".recent-work-section__projects"), "80%");
+// new RevealOnScroll($(".skills-section__left-item-container"), "80%");
+// new RevealOnScroll($(".skills-section__right-item-container"), "80%");
 
 /***/ }),
 /* 9 */
