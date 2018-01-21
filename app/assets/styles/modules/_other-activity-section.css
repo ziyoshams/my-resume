@@ -6,7 +6,6 @@
     display: flex;
     flex-wrap: wrap;
 
-
     .wrapper{
       @mixin clearfix;
     }
@@ -14,19 +13,28 @@
     &__header{
       font-size: 1.4rem;
       font-weight: 400;
-      color: #383538;
+      color: #000;
+      margin: 0;
+      padding: 5px 10px;
+      border-left: 5px solid #53b4bf;
+
+      @mixin atLarge{
+        border-left: none;
+      }
     }
 
     &__activity-box{
+      background: #FFF;
       flex-basis: 100%;
       float: left;
-      border-left:5px solid skyblue;
-      padding-left: 15px;
-      margin-bottom: 5px;
+      margin: 5px 0px;
+      padding: 15px 0px 0px 0px;
 
       @mixin atLarge{
-        flex-basis: 45%;
-        margin: 5px;
+        padding: 15px 0px 0px 10px;
+        flex-basis: 100%;
+        margin: 15px;
+        border-left: 20px solid #53b4bf;
       }
 
       &__description{
@@ -34,6 +42,7 @@
         line-height: 1.6;
         font-weight: 300;
         text-indent: 15px;
+        padding: 5px 15px;
 
         @mixin atMedium{
           font-size: 1rem;

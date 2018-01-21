@@ -1089,7 +1089,7 @@ html, body{
     -webkit-box-flex: 1;
         -ms-flex: 1;
             flex: 1;
-    margin: 10px;
+    margin: 25px 5px;
     height: 150px;
     min-width: 500px;
     max-width: 600px;
@@ -1284,24 +1284,36 @@ html, body{
 .other-activity-section .activity-section__header{
   font-size: 1.4rem;
   font-weight: 400;
-  color: #383538;
+  color: #000;
+  margin: 0;
+  padding: 5px 10px;
+  border-left: 5px solid #53b4bf;
+}
+
+@media(min-width:1010px) {
+
+  .other-activity-section .activity-section__header {
+    border-left: none;
+  }
 }
 
 .other-activity-section .activity-section__activity-box{
+  background: #FFF;
   -ms-flex-preferred-size: 100%;
       flex-basis: 100%;
   float: left;
-  border-left:5px solid skyblue;
-  padding-left: 15px;
-  margin-bottom: 5px;
+  margin: 5px 0px;
+  padding: 15px 0px 0px 0px;
 }
 
 @media(min-width:1010px) {
 
   .other-activity-section .activity-section__activity-box {
-    -ms-flex-preferred-size: 45%;
-        flex-basis: 45%;
-    margin: 5px;
+    padding: 15px 0px 0px 10px;
+    -ms-flex-preferred-size: 100%;
+        flex-basis: 100%;
+    margin: 15px;
+    border-left: 20px solid #53b4bf;
   }
 }
 
@@ -1310,6 +1322,7 @@ html, body{
   line-height: 1.6;
   font-weight: 300;
   text-indent: 15px;
+  padding: 5px 15px;
 }
 
 @media(min-width:800px) {
