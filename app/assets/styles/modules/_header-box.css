@@ -34,12 +34,9 @@
     transition: all 0.3s ease-in-out;
 
     @mixin atLarge{
-      width: 70px;
-      height: 70px;
-      background-color: #53b4bf;
+      width: 80px;
+      height: 80px;
       border-radius: 20px;
-      border-left: 5px solid #53b4bf;
-      border-right: 5px solid #53b4bf;
     }
 
   }

@@ -10,6 +10,7 @@ footer{
 
   @mixin atMedium{
     height: 100px;
+    
   }
 
   span{
