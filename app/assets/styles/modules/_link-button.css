@@ -25,4 +25,16 @@
   &--light-green{
     background-color: #48929B;
   }
+
+  &--purple{
+    background-color: #487eb0;
+  }
+
+  &--alythia{
+    background-color: #273c75;
+  }
+
+  &--casa-de-aves{
+    background-color: #10ac84;
+  }
 }

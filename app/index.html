@@ -49,11 +49,21 @@
 			<div class="skills-section__left">
 				<div class="skills-section__left-item-container">
 					<div class="skills-section__left__logo">
+						<i class="devicon-react-original"></i>
+					</div>
+					<div class="skills-section__left__content">
+						<p>All of my recent projects leverage <strong>React</strong> framework such as Alythia, Casa-De-Aves and Simple Weather App.
+						</p>
+					</div>
+				</div>
+				<div class="skills-section__left-item-container">
+					<div class="skills-section__left__logo">
 						<i class="devicon-nodejs-plain"></i>
 					</div>
 					<div class="skills-section__left__content">
-						<p><strong>Node JS</strong> a powerful server-side technology.
-						Concentrated on technologies that Node has to offer such as Express.</p>
+						<p><strong>NodeJS</strong> has become crucial part of my projects.
+						Recent projects use <strong>Express</strong> and <strong>PorstgreSQL</strong> to take advantage of Node.
+						</p>
 					</div>
 				</div>
 
@@ -62,7 +72,8 @@
 						<i class="devicon-php-plain"></i>
 					</div>
 					<div class="skills-section__left__content">
-						<p><strong>PHP</strong> has been useful for implementation of forms and communication with MySQL Database. I use it for very small projects</p>
+						<p><strong>PHP</strong> has been useful for implementation of forms and communication with MySQL. I have used it to create 
+						<strong>WordPress</strong> templates.</p>
 					</div>
 				</div>
 
@@ -71,7 +82,8 @@
 						<i class="devicon-javascript-plain"></i>
 					</div>
 					<div class="skills-section__left__content">
-						<p>Prior to learning NodeJS, I used <strong>JavasScript</strong> for DOM elements. Now I use it from Arduino projects to OOP.
+						<p>I use <strong>JavasScript</strong> every day from DOM manipulations to <strong>React</strong> components, 
+						<strong>Arduino</strong> projects and so on.
 						</p>
 					</div>
 				</div>
@@ -88,6 +100,16 @@
 			</div>
 
 			<div class="skills-section__right">
+				<div class="skills-section__right-item-container">
+						<div class="skills-section__right__logo">
+							<i class="devicon-postgresql-plain"></i>
+						</div>
+						<div class="skills-section__left__content">
+							<p>
+								Alythia, Casa-De-Aves use <strong>Sequelize ORM</strong> for 	<strong>PostgeSQL</strong> to do CRUD operations and create relationships with tables.
+							</p>
+						</div>
+					</div>
 				<div class="skills-section__right-item-container">
 					<div class="skills-section__right__logo">
 						<i class="devicon-mongodb-plain-wordmark"></i>
@@ -122,7 +144,7 @@
 						<i class="devicon-mysql-plain-wordmark"></i>
 					</div>
 					<div class="skills-section__right__content">
-						<p>I learned Oracle SQL and switched to MySQL for web development.</p>
+						<p>I srated with Oracle SQL and then switched to <strong>MySQL, PostgeSQL and MongoDB</strong> for web development.</p>
 					</div>
 				</div>
 
@@ -137,13 +159,45 @@
 			<h2 class="section-header">RECENT WORK</h2>
 			<div class="recent-work-section__works">
 				<div class="recent-work-section__projects">
-					<h3>Travel Website</h3>
+					<h3>Alythia</h3>
+					<p><i>NodeJS, PostgeSQL, Redis, React</i></p>
+					<p class="recent-work-section__projects__description">Passwordless authentication system. Using your phones capabilities( FaceID, TouchID) you can sign in to our native app and scan that QR code.  Our app builds a secure bridge between website you are trying to log in and you. No more passwords. 
+					</p>
+					<div class="recent-work-section__projects__btn">
+						<a class="link-button link-button--alythia" href="https://alythia.herokuapp.com/" >Alythia</a>
+					</div>
+					<div class="recent-work-section__projects__github">
+						<a href="https://github.com/alythia" target="_blank"><span class="github_link"></span></a>
+					</div>
+				</div>
+				<div class="recent-work-section__projects">
+					<h3>Casa de Aves</h3>
+					<p><i>NodeJS, PostgeSQL, React, Redux, Materialize</i></p>
+					<p class="recent-work-section__projects__description">Developed E-commerce site with a team in Agile Environment. Back-end is powered by NodeJS, Express, and PostgreSQL. Front-end we used React and Redux. Users able to add items to cart and checkout using their credit/debit card.</p>
+					<div class="recent-work-section__projects__btn">
+						<a class="link-button link-button--casa-de-aves" href="https://casa-de-aves.herokuapp.com/" >Casa de Aves</a>
+					</div>
+					<div class="recent-work-section__projects__github">
+						<a href="https://github.com/GraceShopper8/Casa-De-Aves" target="_blank"><span class="github_link"></span></a>
+					</div>
+				</div>
+				<div class="recent-work-section__projects">
+					<h3>Twitter Bot</h3>
+					<p><i>Twitter API, MonkeyLearn</i></p>
+					<p class="recent-work-section__projects__description">The bot is able to grab twitter mentions and reply to them. Bot uses Twitter's API to get tweets and reply based on sentiment analysis from MonkeyLearn. Bot queries database to get appropriate emojis and replies to all mentions in time intervals.
+					</p>
+					<div class="recent-work-section__projects__btn">
+						<a class="link-button link-button--purple" href="#" >Twitter Bot</a>
+					</div>
+				</div>		
+				<div class="recent-work-section__projects">
+					<h3>Travel site</h3>
 					<p><i>HTML5, CSS, JavaScript ES6, Gulp</i></p>
 					<p class="recent-work-section__projects__description">Mobile-first website developed through Gulp automation and NPM packages. jQuery was used for animations.
 					BEM syntax used for CSS and Webpack with babel-loader for javascript compatibility.
 					</p>
 					<div class="recent-work-section__projects__btn">
-						<a href="https://ziyoshams.github.io/travel-site" target="_blank" class="link-button link-button--green">Travel Website</a>
+						<a href="https://ziyoshams.github.io/travel-site" target="_blank" class="link-button link-button--green">Travel site</a>
 					</div>
 					<div class="recent-work-section__projects__github">
 						<a href="https://github.com/ziyoshams/travel-site" target="_blank"><span class="github_link"></span></a>
@@ -161,16 +215,6 @@
 					</div>
 					<div class="recent-work-section__projects__github">
 						<a href="https://github.com/ziyoshams/simple-weather-app" target="_blank"><span class="github_link"></span></a>
-					</div>
-				</div>
-				<div class="recent-work-section__projects">
-					<h3>Gappza App</h3>
-					<p><i>Design</i></p>
-					<p class="recent-work-section__projects__description">Gappza App transfers funds to mobile phones for Mobile Providers of Tajikistan. The transactions are instantenious using Stripe.
-						Designed UI for Gappza App including icon.
-					</p>
-					<div class="recent-work-section__projects__btn">
-						<a class="link-button link-button--pink" href="https://invis.io/CZABU04TW#/216126367_Login_Page_1" >InVision</a>
 					</div>
 				</div>
 				<div class="recent-work-section__projects">
@@ -195,35 +239,71 @@
 			<h2 class="section-header">EDUCATION</h2>
 		</div>
 			<div class="education-section__schools">
+				
+				<div class="education-section--school-section">
+					<div class="education-section--logo">
+						<img src="assets/images/fullstack.jpg" alt="Fullstack Academy Logo" >
+					</div>
+					<div class="education-section--info">
+						<h3 class="education-section--header"><a target="_blank" href="http://www.fullstackacademy.com">Fullstack Academy of Code</a></h3>
+						<p class="education-section--title">Immersive Software Engineering Program - 2018</p>
+					</div>
+				</div>
+				
 				<div class="education-section--school-section">
 					<div class="education-section--logo">
 						<img src="assets/images/bmcc_logo.jpg" alt="BMCC logo" >
 					</div>
 					<div class="education-section--info">
 						<h3 class="education-section--header"><a target="_blank" href="http://www.bmcc.cuny.edu">Borough of Manhattan Community College</a></h3>
-						<p class="education-section--title">Associate in Computer Science 2014 - 2017</p>
+						<p class="education-section--title">Associate's Degree in Computer Science 2014 - 2017</p>
 					</div>
 				</div>
+				
 				<div class="education-section--school-section">
-					<img src="assets/images/ccny_logo.jpg" alt="CCNY logo" >
+					<div class="education-section--logo">
+						<img src="assets/images/ccny_logo.jpg" alt="CCNY logo" >
+					</div>
 					<div class="education-section--info">
 						<h3 class="education-section--header"><a target="_blank" href="http://ccny.cuny.edu">The City College of New York</a></h3>
-						<p class="education-section--title">Computer Science 2017 - Currently</p>
+						<p class="education-section--title">Computer Science 2017 - Unfinished</p>
 					</div>
 				</div>
+
 				<div class="education-section--school-section">
-					<img src="assets/images/udacity_scholarship.png" alt="Udacity Scholarship Badge" >
+					<div class="education-section--logo">
+						<img src="assets/images/udacity_scholarship.png" alt="Udacity Scholarship Badge" >
+					</div>
 					<div class="education-section--info">
 						<h3 class="education-section--header">Google Developer Challenge Scholarship</h3>
-						<p class="education-section--title">Currently Participating</p>
+						<p class="education-section--title">Online Course - 2018</p>
 					</div>
 				</div>
+
+				<div class="education-section--school-section">
+					<div class="education-section--logo">
+						<img src="assets/images/mongodb-university-logo.svg" alt="MongoDB University" >
+					</div>
+					<div class="education-section--info">
+						<h3 class="education-section--header">MongoDB for NodeJS Developers</h3>
+						<p class="education-section--title">Online Course - 2017</p>
+					</div>
+				</div>
+
 			</div>
 	</div>
 	<div class="other-activity-section generic-section">
 		<div class="wrapper">
 			<h2 class="section-header">OTHER ACTIVITY</h2>
 			<div class="activity-section">
+				<div class="activity-section__activity-box">
+					<h3 class="activity-section__header">Lehman College Hackathon - Fall 2017</h3>
+					<p class="activity-section__activity-box__description">National Society of Black Engineers (NSBE) hosted another Hackathon in Lehman College.
+						The goal was to create a Banking System that would persuade people who don't use banks to start using them.
+						Along the way, Capital One provided their Nessie API to coummunicate with our application. We used Express with NodeJS
+						to power our backend and Handlebars templating engine to create our UI. Our team faced a lot of challenges due to complexity of banking system and API.
+					</p>
+				</div>
 				<div class="activity-section__activity-box">
 					<h3 class="activity-section__header">Lehman College Hackathon - Fall 2016</h3>
 					<p class="activity-section__activity-box__description">National Society of Black Engineers (NSBE) hosted Hackathon in Lehman College.
@@ -237,14 +317,6 @@
 					 create an app that would help local businesses to grow. Our team came up with the idea of a web application that would have a chatbot.
 				   The challenges we faced were mainly using IBM's Watson AI. Creation of chatbot was not successful.</p>
 				</div>
-				<div class="activity-section__activity-box">
-					<h3 class="activity-section__header">Lehman College Hackathon - Fall 2017</h3>
-					<p class="activity-section__activity-box__description">National Society of Black Engineers (NSBE) hosted another Hackathon in Lehman College.
-						The goal was to create a Banking System that would persuade people who don't use banks to start using them.
-						Along the way, Capital One provided their Nessie API to coummunicate with our application. We used Express with NodeJS
-						to power our backend and Handlebars templating engine to create our UI. Our team faced a lot of challenges due to complexity of banking system and API.
-					</p>
-				</div>
 			</div>
 
 		</div>
@@ -255,13 +327,16 @@
 	</footer>
 
 	<div class="modal">
-		<h1>Hire Me.</h1>
-		<div class="modal__content">
-			<a href="https://github.com/ziyoshams" target="_blank"><img src="assets/images/git.svg"  class="modal--logo" alt=""></a>
-			<a href="https://twitter.com/shamsziyo" target="_blank"><img src="assets/images/twitter.svg"  class="modal--logo" alt=""></a>
-			<a href="https://www.linkedin.com/in/ziyovuddin-shamsiddini-06672bab" target="_blank"><img src="assets/images/linked_in.svg"  class="modal--logo" alt=""></a>
-		</div>
 		<div class="modal__close">X</div>
+		<div class="modal__resume">
+			<div class="modal__resume__content">
+				<a href="https://github.com/ziyoshams" target="_blank"><img src="assets/images/git.svg"  class="modal--logo" alt=""></a>
+				<a href="https://twitter.com/shamsziyo" target="_blank"><img src="assets/images/twitter.svg"  class="modal--logo" alt=""></a>
+				<a href="https://www.linkedin.com/in/ziyoshams/" target="_blank"><img src="assets/images/linked_in.svg"  class="modal--logo" alt=""></a>
+			</div>
+			<object class="modal__resume__data" data="assets/images/resume.pdf">
+			</object>
+		</div>
 	</div>
 
 <!-- build:js assets/scripts/App.js-->
