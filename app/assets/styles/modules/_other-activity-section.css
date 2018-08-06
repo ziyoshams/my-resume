@@ -41,7 +41,6 @@
         font-size: 1rem;
         line-height: 1.6;
         font-weight: 300;
-        text-indent: 15px;
         padding: 5px 15px;
 
         @mixin atMedium{

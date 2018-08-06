@@ -51,27 +51,6 @@
     visibility: visible;
   }
 
-  &--logo {
-    width: 90px;
-    height: 90px;
-    margin: 20px;
-    transition: all 200ms ease-in;
-
-    @mixin atMedium {
-      width: 110px;
-      height: 110px;
-    }
-
-    @mixin atLarge {
-      width: 100px;
-      height: 100px;
-    }
-
-    &:hover {
-      transform: scale(1.1);
-    }
-  }
-
   &__resume {
     display: flex;
     flex-direction: column;
@@ -81,18 +60,6 @@
       background: #53b4bf;
       flex: 1;
       height: 100vh;
-    }
-
-    &__content {
-      background: #53b4bf;
-      min-height: 300px;
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;      
-      @mixin atLarge {
-      
-      }
     }
   }
 }

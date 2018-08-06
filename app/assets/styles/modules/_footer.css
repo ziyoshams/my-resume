@@ -4,17 +4,86 @@ footer{
   background: -webkit-linear-gradient(left, #53b4bf 0%,#6ec7c6 100%);
   background: linear-gradient(to right, #53b4bf 0%,#6ec7c6 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#53b4bf', endColorstr='#6ec7c6',GradientType=1 );
-  height: 60px;
   width: 100%;
-  display: flex;
 
-  @mixin atMedium{
-    height: 100px;
+  .contacts{
+    padding-top: 30px;
+    padding-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+
     
-  }
+    @mixin atMedium{
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+    }
 
-  span{
-    margin: auto;
-    color: #4C6475;
+    &__social{
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      margin-top: 20px;
+      
+      @mixin atMedium{
+        justify-content: center;
+      }
+
+      &__icon{
+        width: 50px;
+        transition: all 0.2s ease-in-out;
+        
+        @mixin atMedium{
+          width: 55px;
+          margin: 0px 10px;
+        }
+        
+        @mixin atLarge{
+          width: 65px;
+        }
+      }
+
+      &__icon:hover{
+        transform:scale(1.05);
+      }
+
+      &__icon:active{
+        transform:scale(3);
+      }
+    }
+
+    &__personal{
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding-left: 7%;
+
+      @mixin atMedium{
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding-left: 0;
+      }
+
+      &__info{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 300px;
+        margin: 5px;
+      }
+
+      &__icon{
+        width:30px;
+        margin: 3px;
+      }
+
+      @mixin atMedium{
+        border-right: 2px solid #353538;
+      }
+    }
+
   }
 }
