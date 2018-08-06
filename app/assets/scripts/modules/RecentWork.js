@@ -1,24 +1,22 @@
 import $ from 'jquery';
 
-class RecentWorks{
-  constructor (){
+class RecentWorks {
+  constructor() {
     this.x = $('.recent-work-section__projects');
     this.event();
   }
 
-  event(){
+  event() {
     var that = this.x;
     this.x.hover(
-      function(){
+      function() {
         $(this).addClass('test');
       },
-      function(){
+      function() {
         $(this).removeClass('test');
       }
     );
   }
-
-
 }
 
 module.exports = RecentWorks;

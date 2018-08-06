@@ -1,7 +1,6 @@
 .primary-nav{
   padding-top: 15px;
   display: none;
-  
 
   @mixin atMedium{
     padding-top: 0;
@@ -17,12 +16,10 @@
       display: inline-block;
       float: right;
     }
-
   }
 
   &--is-visible{
     display: block;
-
   }
 
   ul{

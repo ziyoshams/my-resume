@@ -11110,34 +11110,34 @@ var MobileMenu = function () {
   function MobileMenu() {
     _classCallCheck(this, MobileMenu);
 
-    this.menuIcon = (0, _jquery2.default)(".header-box__menu-icon");
-    this.menuContent = (0, _jquery2.default)(".header-box__menu-content");
-    this.navMenu = (0, _jquery2.default)(".primary-nav");
-    this.buttonClicked = (0, _jquery2.default)(".primary-nav a");
+    this.menuIcon = (0, _jquery2.default)('.header-box__menu-icon');
+    this.menuContent = (0, _jquery2.default)('.header-box__menu-content');
+    this.navMenu = (0, _jquery2.default)('.primary-nav');
+    this.buttonClicked = (0, _jquery2.default)('.primary-nav a');
     this.events();
   }
 
   _createClass(MobileMenu, [{
-    key: "events",
+    key: 'events',
     value: function events() {
       this.menuIcon.click(this.toggleTheMenu.bind(this));
       this.buttonClicked.click(this.removeTheMenu.bind(this));
     }
   }, {
-    key: "toggleTheMenu",
+    key: 'toggleTheMenu',
     value: function toggleTheMenu() {
-      this.menuContent.toggleClass("header-box__menu-content--is-visible");
-      this.menuContent.toggleClass("header-box__menu-content--is-expanded");
-      this.menuIcon.toggleClass("header-box__menu-icon--close-x");
-      this.navMenu.toggleClass("primary-nav--is-visible");
+      this.menuContent.toggleClass('header-box__menu-content--is-visible');
+      this.menuContent.toggleClass('header-box__menu-content--is-expanded');
+      this.menuIcon.toggleClass('header-box__menu-icon--close-x');
+      this.navMenu.toggleClass('primary-nav--is-visible');
     }
   }, {
-    key: "removeTheMenu",
+    key: 'removeTheMenu',
     value: function removeTheMenu() {
-      this.menuContent.removeClass("header-box__menu-content--is-visible");
-      this.menuContent.removeClass("header-box__menu-content--is-expanded");
-      this.menuIcon.removeClass("header-box__menu-icon--close-x");
-      this.navMenu.removeClass("primary-nav--is-visible");
+      this.menuContent.removeClass('header-box__menu-content--is-visible');
+      this.menuContent.removeClass('header-box__menu-content--is-expanded');
+      this.menuIcon.removeClass('header-box__menu-icon--close-x');
+      this.navMenu.removeClass('primary-nav--is-visible');
     }
   }]);
 
@@ -11276,7 +11276,7 @@ var RevealOnScroll = function () {
   _createClass(RevealOnScroll, [{
     key: 'hideInitially',
     value: function hideInitially() {
-      this.itemsToReveal.addClass("reveal-item");
+      this.itemsToReveal.addClass('reveal-item');
     }
   }, {
     key: 'createWaypoints',
