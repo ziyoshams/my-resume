@@ -1,6 +1,6 @@
 .reveal-item{
   opacity: 0;
-  transition: all 1s ease-out;
+  transition: opacity 1s ease-out;
   transform-origin: left;
 
   &--is-visible{

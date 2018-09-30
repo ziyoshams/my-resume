@@ -500,32 +500,6 @@ html, body{
   }
 }
 
-.header-box__logo{
-  display: none;
-  position: absolute;
-  top:0;
-  left: 100;
-  width: 50px;
-  height:50px;
-  background: url("../../assets/images/Artboard.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-  margin: 5px;
-  z-index: 10;
-  -webkit-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
-}
-
-@media(min-width:1010px) {
-
-  .header-box__logo {
-    display: block;
-    width: 80px;
-    height: 80px;
-    border-radius: 20px;
-  }
-}
-
 .header-box__menu-content{
   height: 50px;
   position: absolute;
@@ -571,7 +545,7 @@ html, body{
 
 .header-box__menu-content--is-visible{
   opacity: 1;
-  z-index: 1;
+  z-index: 10;
   -webkit-transform: scale(1);
           transform: scale(1);
   padding-top: 100px;
@@ -753,13 +727,18 @@ html, body{
   margin-right: auto;
 }
 
+.wrapper--wider{
+  max-width: 1400px;
+  margin: auto;
+}
+
 .clearfix{
   display: table;
   content: "";
   clear: both;
 }
 
-.primary-nav{
+.main-nav{
   padding-top: 15px;
   display: none;
 
@@ -767,14 +746,14 @@ html, body{
 
 @media(min-width:800px) {
 
-  .primary-nav {
+  .main-nav {
     padding-top: 0;
   }
 }
 
 @media(min-width:800px) {
 
-  .primary-nav--pull-right {
+  .main-nav--middle {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -783,17 +762,16 @@ html, body{
 
 @media(min-width:1010px) {
 
-  .primary-nav--pull-right {
+  .main-nav--middle {
     display: inline-block;
-    float: right;
   }
 }
 
-.primary-nav--is-visible{
+.main-nav--is-visible{
   display: block;
 }
 
-.primary-nav ul{
+.main-nav ul{
   margin:auto;
   padding:0 0 30px 0;
   height: 50px;
@@ -801,13 +779,13 @@ html, body{
 
 @media(min-width:800px) {
 
-  .primary-nav ul {
+  .main-nav ul {
     padding: 0;
     height: 50px;
   }
 }
 
-.primary-nav li{
+.main-nav li{
   -webkit-box-flex: 1;
       -ms-flex: 1;
           flex: 1;
@@ -826,13 +804,13 @@ html, body{
   transition: all 0.3s ease-in;
 }
 
-.primary-nav li:hover{
+.main-nav li:hover{
   background: #4C6475;
 }
 
 @media(min-width:800px) {
 
-  .primary-nav li {
+  .main-nav li {
     height: 50px;
     min-width: 100px;
     padding: 0 20px;
@@ -840,41 +818,41 @@ html, body{
     float: left;
   }
 
-  .primary-nav li:hover a {
+  .main-nav li:hover a {
     color: #000;
   }
 }
 
 @media(min-width:1010px) {
 
-  .primary-nav li {
+  .main-nav li {
     border: none;
     float: right;
     border-radius: 0;
     margin: 0;
   }
 
-  .primary-nav li:hover {
+  .main-nav li:hover {
     background: #4C6475;
   }
 
-  .primary-nav li:hover a {
+  .main-nav li:hover a {
     color: #FFF;
   }
 }
 
-.primary-nav li:last-child{
+.main-nav li:last-child{
   padding-right: 0;
 }
 
 @media(min-width:800px) {
 
-  .primary-nav li:last-child {
+  .main-nav li:last-child {
     padding-right: 20px;
   }
 }
 
-.primary-nav a{
+.main-nav a{
   margin: auto;
   color: #353538;
   font-weight: 400;
@@ -890,15 +868,12 @@ html, body{
 
 @media(min-width:800px) {
 
-  .primary-nav a {
+  .main-nav a {
     color: #ecf0f1;
     padding: 12px 0px;
     font-size: 1rem;
     background-color: transparent;
-  }
-
-  .primary-nav a.is-current-link {
-    color: orange;
+    text-shadow: 0px 1px 1px #777;
   }
 }
 
@@ -1128,39 +1103,12 @@ html, body{
   height: 46px;
   display: inline-block;
   padding: 10px 0px;
-  color:#fff;
-}
-
-.link-button--pink{
-  background-color: #F42156;
-}
-
-.link-button--blue{
-  background-color: #3498db;
-}
-
-.link-button--navy{
-  background-color: #34495e ;
-}
-
-.link-button--green{
-  background-color: #2ecc71;
+  color:#f2f7f8;
+  text-shadow: 0px 1px 1px #777;
 }
 
 .link-button--light-green{
   background-color: #48929B;
-}
-
-.link-button--purple{
-  background-color: #487eb0;
-}
-
-.link-button--alythia{
-  background-color: #273c75;
-}
-
-.link-button--casa-de-aves{
-  background-color: #10ac84;
 }
 
 .recent-work-section{
@@ -1262,14 +1210,9 @@ html, body{
   bottom: 0;
   right: 0;
   background: #fff;
-  border-top-left-radius: 50%;
   box-shadow: -2px 0px 3px -2px #333;
-  -webkit-transition: all 500 ease-in;
-  transition: all 500 ease-in;
-}
-
-.recent-work-section__projects__github:active{
-  box-shadow: none;
+  -webkit-transition: all 300ms ease-in;
+  transition: all 300ms ease-in;
 }
 
 .recent-work-section__projects__github .github_link{
@@ -1284,6 +1227,10 @@ html, body{
   background: url("../../assets/images/github_logo.svg");
   background-size: contain;
   background-repeat: no-repeat;
+  -webkit-transition: -webkit-transform 300ms ease-in-out;
+  transition: -webkit-transform 300ms ease-in-out;
+  transition: transform 300ms ease-in-out;
+  transition: transform 300ms ease-in-out, -webkit-transform 300ms ease-in-out;
 }
 
 .other-activity-section{
@@ -1600,8 +1547,8 @@ footer .contacts__personal__icon{
 
 .reveal-item{
   opacity: 0;
-  -webkit-transition: all 1s ease-out;
-  transition: all 1s ease-out;
+  -webkit-transition: opacity 1s ease-out;
+  transition: opacity 1s ease-out;
   -webkit-transform-origin: left;
           transform-origin: left;
 }

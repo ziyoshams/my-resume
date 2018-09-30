@@ -3,7 +3,7 @@ import smoothScroll from 'jquery-smooth-scroll';
 
 class SmoothScroll {
   constructor() {
-    this.link = $('.primary-nav a');
+    this.link = $('.main-nav a');
     this.event();
   }
 

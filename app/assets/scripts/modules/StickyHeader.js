@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import waypoints from '../../../../node_modules/waypoints/lib/noframework.waypoints';
+import '../../../../node_modules/waypoints/lib/noframework.waypoints';
 
 class StickyHeader {
   constructor() {
@@ -9,7 +9,7 @@ class StickyHeader {
   }
 
   event() {
-    var that = this;
+    const that = this;
     new Waypoint({
       element: that.triggerElement[0],
       handler: function(direction) {

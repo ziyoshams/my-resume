@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import waypoints from '../../../../node_modules/waypoints/lib/noframework.waypoints';
+import '../../../../node_modules/waypoints/lib/noframework.waypoints';
 
 class RevealOnScroll {
   constructor(elems, offset) {
@@ -14,9 +14,9 @@ class RevealOnScroll {
   }
 
   createWaypoints() {
-    var that = this; // to save the object
+    const that = this; // to save the object
     this.itemsToReveal.each(function() {
-      var currentItem = this;
+      const currentItem = this;
       new Waypoint({
         element: currentItem,
         handler: function() {

@@ -1,4 +1,4 @@
-.primary-nav{
+.main-nav{
   padding-top: 15px;
   display: none;
 
@@ -6,7 +6,7 @@
     padding-top: 0;
   }
 
-  &--pull-right{
+  &--middle{
 
     @mixin atMedium{
       display: flex;
@@ -14,7 +14,7 @@
 
     @mixin atLarge{
       display: inline-block;
-      float: right;
+      
     }
   }
 
@@ -91,16 +91,15 @@
     font-size: 1rem;
     flex: 1;
     transition: color 0.3s ease-in-out;
-
+    
+    
     @mixin atMedium{
       color: #ecf0f1;
       padding: 12px 0px;
       font-size:1rem;
       background-color: transparent;
+      text-shadow: 0px 1px 1px #777;
 
-      &.is-current-link{
-        color: orange;
-      }
     }
   }
 
