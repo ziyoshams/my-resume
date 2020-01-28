@@ -53,10 +53,9 @@
 
   &__resume {
     display: flex;
-    flex-direction: column;
     background: #eee;
-    
-    &__data{
+
+    &__data {
       background: #53b4bf;
       flex: 1;
       height: 100vh;

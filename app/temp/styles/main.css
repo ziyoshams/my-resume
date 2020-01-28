@@ -1439,12 +1439,10 @@ footer .contacts__personal__icon{
 .modal__resume {
   display: -ms-flexbox;
   display: flex;
-  -ms-flex-direction: column;
-      flex-direction: column;
   background: #eee;
 }
 
-.modal__resume__data{
+.modal__resume__data {
   background: #53b4bf;
   -ms-flex: 1;
       flex: 1;
