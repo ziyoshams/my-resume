@@ -1,9 +1,9 @@
 import $ from "jquery";
-import mobileMenu from './modules/MobileMenu.js';
-import Modal from './modules/Modal.js';
-import RevealOnScroll from './modules/RevealOnScroll.js';
-import SmoothScroll from './modules/SmoothScroll.js';
-import StickyHeader from './modules/StickyHeader.js';
+import mobileMenu from "./modules/MobileMenu.js";
+import Modal from "./modules/Modal.js";
+import RevealOnScroll from "./modules/RevealOnScroll.js";
+import SmoothScroll from "./modules/SmoothScroll.js";
+import StickyHeader from "./modules/StickyHeader.js";
 
 new mobileMenu();
 new Modal();
