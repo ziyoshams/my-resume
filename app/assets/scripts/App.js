@@ -10,6 +10,14 @@ new Modal();
 new SmoothScroll();
 new StickyHeader();
 
+window.addEventListener("load", () => {
+  const mainText = document.getElementsByClassName("header-box--middle");
+  if (mainText.length) {
+    setTimeout(() => {
+      mainText[0].classList.add("reveal-item--is-visible");
+    }, 300);
+  }
+});
 new RevealOnScroll($(".recent-work-section__projects"), "80%");
 new RevealOnScroll($(".skills-section__left-item-container"), "80%");
 new RevealOnScroll($(".skills-section__right-item-container"), "80%");

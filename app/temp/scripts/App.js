@@ -11575,12 +11575,12 @@ var RevealOnScroll = function () {
   }
 
   _createClass(RevealOnScroll, [{
-    key: 'hideInitially',
+    key: "hideInitially",
     value: function hideInitially() {
-      this.itemsToReveal.addClass('reveal-item');
+      this.itemsToReveal.addClass("reveal-item");
     }
   }, {
-    key: 'createWaypoints',
+    key: "createWaypoints",
     value: function createWaypoints() {
       var that = this; // to save the object
       this.itemsToReveal.each(function () {
@@ -11588,7 +11588,7 @@ var RevealOnScroll = function () {
         new Waypoint({
           element: currentItem,
           handler: function handler() {
-            (0, _jquery2.default)(currentItem).addClass('reveal-item--is-visible');
+            (0, _jquery2.default)(currentItem).addClass("reveal-item--is-visible");
           },
           offset: that.offsetPercentage
         });
@@ -11738,6 +11738,14 @@ new _Modal2.default();
 new _SmoothScroll2.default();
 new _StickyHeader2.default();
 
+window.addEventListener("load", function () {
+  var mainText = document.getElementsByClassName("header-box--middle");
+  if (mainText.length) {
+    setTimeout(function () {
+      mainText[0].classList.add("reveal-item--is-visible");
+    }, 300);
+  }
+});
 new _RevealOnScroll2.default((0, _jquery2.default)(".recent-work-section__projects"), "80%");
 new _RevealOnScroll2.default((0, _jquery2.default)(".skills-section__left-item-container"), "80%");
 new _RevealOnScroll2.default((0, _jquery2.default)(".skills-section__right-item-container"), "80%");

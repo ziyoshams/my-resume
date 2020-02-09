@@ -1,5 +1,5 @@
-import $ from 'jquery';
-import '../../../../node_modules/waypoints/lib/noframework.waypoints';
+import $ from "jquery";
+import "../../../../node_modules/waypoints/lib/noframework.waypoints";
 
 class RevealOnScroll {
   constructor(elems, offset) {
@@ -10,7 +10,7 @@ class RevealOnScroll {
   }
 
   hideInitially() {
-    this.itemsToReveal.addClass('reveal-item');
+    this.itemsToReveal.addClass("reveal-item");
   }
 
   createWaypoints() {
@@ -20,7 +20,7 @@ class RevealOnScroll {
       new Waypoint({
         element: currentItem,
         handler: function() {
-          $(currentItem).addClass('reveal-item--is-visible');
+          $(currentItem).addClass("reveal-item--is-visible");
         },
         offset: that.offsetPercentage
       });
